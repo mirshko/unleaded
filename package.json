@@ -1,0 +1,24 @@
+{
+  "name": "gasstation",
+  "main": "./AppEntry.js",
+  "private": true,
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "eject": "expo eject",
+    "format": "prettier --write \"./src/**/*.js\""
+  },
+  "dependencies": {
+    "balance-common": "^0.5.24-noautorefresh",
+    "bignumber.js": "^8.0.1",
+    "expo": "^31.0.2",
+    "react": "16.5.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-31.0.0.tar.gz",
+    "react-native-typography": "^1.4.0"
+  },
+  "devDependencies": {
+    "babel-preset-expo": "^5.0.0",
+    "prettier": "^1.15.2"
+  }
+}
