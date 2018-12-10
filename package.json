@@ -10,7 +10,6 @@
     "format": "prettier --write \"./src/**/*.js\""
   },
   "dependencies": {
-    "balance-common": "^0.5.24-noautorefresh",
     "bignumber.js": "^8.0.1",
     "expo": "^31.0.2",
     "react": "16.5.0",
