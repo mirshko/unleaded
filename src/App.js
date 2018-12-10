@@ -14,7 +14,7 @@ import { toGwei, gweiToEth, ethToUsd } from "./helpers";
 
 const endpoint = `https://ethgasstation.info/json/ethgasAPI.json`;
 
-export const Wrapper = children => (
+export const Wrapper = ({children}) => (
   <SafeAreaView style={{ flex: 1 }}>{children}</SafeAreaView>
 );
 
@@ -71,17 +71,19 @@ export default class App extends React.Component {
       );
     }
 
+    // @TODO: replace this with the current cost of eth via API
+    const currentCostOfEth = 89.15;
+
     const gwei = toGwei(this.state.data.average);
     const eth = gweiToEth(gwei);
-    const usd = ethToUsd(eth);
+    const usd = ethToUsd(eth, currentCostOfEth).toFixed(3).toString();
 
     return (
       <Wrapper>
         <Header />
         <View style={styles.container}>
-          <Text style={human.largeTitle}>Gwei {gwei}</Text>
-          <Text style={human.largeTitle}>ETH {eth}</Text>
-          <Text style={human.largeTitle}>USD {usd}</Text>
+          <Text style={human.largeTitle}>Gwei {gwei.toString()}</Text>
+          <Text style={human.largeTitle}>USD ${usd}</Text>
         </View>
       </Wrapper>
     );
