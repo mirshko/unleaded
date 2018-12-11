@@ -5,11 +5,15 @@ import {
   Text,
   View,
   ActivityIndicator,
-  TouchableOpacity
+  ActionSheetIOS,
+  Linking
 } from "react-native";
-import { human } from "react-native-typography";
+
+import { human, sanFranciscoWeights, iOSColors } from "react-native-typography";
 
 import Header from "./components/Header";
+
+import TouchableHaptic from "./components/TouchableHaptic";
 
 import { toGwei, gweiToEth, ethToUsd } from "./helpers";
 
@@ -23,13 +27,45 @@ export const Wrapper = ({ children }) => (
   <SafeAreaView style={{ flex: 1 }}>{children}</SafeAreaView>
 );
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  title: {
+    ...human.largeTitleObject,
+    ...sanFranciscoWeights.heavy
+  },
+  settingsContainer: {
+    flex: 0,
+    alignItems: "center",
+    justifyContent: "center"
+  }
+});
+
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { isLoading: true, hasErrored: false, showGasInUsd: false };
+    this.state = {
+      isLoading: true,
+      hasErrored: false,
+      showGasInCurrency: false
+    };
   }
 
   componentDidMount() {
+    this.fetchData();
+  }
+
+  fetchData() {
+    this.setState(
+      {
+        isLoading: true
+      },
+      function() {}
+    );
+
     return fetch(gasEndpoint)
       .then(res => res.json())
       .then(json => {
@@ -69,67 +105,90 @@ export default class App extends React.Component {
       });
   }
 
+  openSettings() {
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: [
+          "Cancel",
+          "About",
+          `${
+            this.state.showGasInCurrency
+              ? "Show Gas In Gwei"
+              : "Show Gas In Currency"
+          }`,
+          "Refresh"
+        ],
+        cancelButtonIndex: 0
+      },
+      buttonIndex => {
+        switch (buttonIndex) {
+          case 1:
+            Linking.openURL(
+              `https://github.com/mirshko/gasstation/blob/master/README.md`
+            );
+            break;
+          case 2:
+            this.setState(prevState => ({
+              showGasInCurrency: !prevState.showGasInCurrency
+            }));
+            break;
+          case 3:
+            this.fetchData();
+            break;
+        }
+      }
+    );
+  }
+
   render() {
-    if (this.state.hasErrored) {
+    if (this.state.hasErrored || this.state.isLoading) {
       return (
         <Wrapper>
           <Header />
           <View style={styles.container}>
-            <Text style={human.largeTitle}>⚠️</Text>
+            {this.state.hasErrored && <Text style={styles.title}>⚠️</Text>}
+            {this.state.isLoading && <ActivityIndicator />}
           </View>
         </Wrapper>
       );
     }
 
-    if (this.state.isLoading) {
-      return (
-        <Wrapper>
-          <Header />
-          <View style={styles.container}>
-            <ActivityIndicator />
-          </View>
-        </Wrapper>
-      );
-    }
+    const currentCostOfEth = this.state.ethData;
+    const rawAverageGas = this.state.gasData.average;
 
-    const currentCostOfEth = this.state.ethData.USD;
+    const gasInEth = gweiToEth(toGwei(rawAverageGas));
 
-    const rawGasValue = this.state.gasData.average;
+    const gasInGwei = toGwei(rawAverageGas);
+    const gasInUsd = ethToUsd(gasInEth, currentCostOfEth.USD).toFixed(3);
 
-    const gwei = toGwei(rawGasValue);
-
-    const usd = ethToUsd(
-      gweiToEth(toGwei(rawGasValue)),
-      currentCostOfEth
-    ).toFixed(3);
+    const format = val => val.toString();
 
     return (
       <Wrapper>
         <Header />
         <View style={styles.container}>
-          <TouchableOpacity
-            onPressOut={() =>
+          <TouchableHaptic
+            onPress={() => {
               this.setState(prevState => ({
-                showGasInUsd: !prevState.showGasInUsd
-              }))
-            }
+                showGasInCurrency: !prevState.showGasInCurrency
+              }));
+            }}
           >
-            <Text style={human.largeTitle}>
-              {this.state.showGasInUsd
-                ? `$${usd.toString()}`
-                : `Gwei ${gwei.toString()}`}
+            <Text style={styles.title}>
+              {this.state.showGasInCurrency
+                ? `$${format(gasInUsd)}`
+                : `Gwei ${format(gasInGwei)}`}
             </Text>
-          </TouchableOpacity>
+          </TouchableHaptic>
+        </View>
+        <View style={styles.settingsContainer}>
+          <TouchableHaptic impact="Light" onPress={() => this.openSettings()}>
+            <Gear />
+          </TouchableHaptic>
         </View>
       </Wrapper>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center"
-  }
-});
+const Gear = () => <Text style={human.largeTitle}>⚙️</Text>;
