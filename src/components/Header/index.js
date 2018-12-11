@@ -4,7 +4,7 @@ import { human } from "react-native-typography";
 
 const Header = () => (
   <View style={styles.header}>
-    <Text style={human.largeTitle}>⛽️</Text>
+    <Text style={human.largeTitle}>🚦</Text>
   </View>
 );
 

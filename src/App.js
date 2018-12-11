@@ -4,7 +4,8 @@ import {
   SafeAreaView,
   Text,
   View,
-  ActivityIndicator
+  ActivityIndicator,
+  TouchableOpacity
 } from "react-native";
 import { human } from "react-native-typography";
 
@@ -12,26 +13,46 @@ import Header from "./components/Header";
 
 import { toGwei, gweiToEth, ethToUsd } from "./helpers";
 
-const endpoint = `https://ethgasstation.info/json/ethgasAPI.json`;
+const gasEndpoint = `https://ethgasstation.info/json/ethgasAPI.json`;
 
-export const Wrapper = ({children}) => (
+const ethEndpoint = `https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD`;
+
+const API_KEY = `8703745dd362001992299bdd13f73d728341894653cb592d4b070bb793c4600c`;
+
+export const Wrapper = ({ children }) => (
   <SafeAreaView style={{ flex: 1 }}>{children}</SafeAreaView>
 );
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { isLoading: true, hasErrored: false };
+    this.state = { isLoading: true, hasErrored: false, showGasInUsd: false };
   }
 
   componentDidMount() {
-    return fetch(endpoint)
+    return fetch(gasEndpoint)
       .then(res => res.json())
       .then(json => {
         this.setState(
           {
-            isLoading: false,
-            data: json
+            gasData: json
+          },
+          function() {}
+        );
+      })
+      .then(() =>
+        fetch(ethEndpoint, {
+          headers: {
+            Authorization: `Apikey ${API_KEY}`
+          }
+        })
+      )
+      .then(res => res.json())
+      .then(json => {
+        this.setState(
+          {
+            ethData: json,
+            isLoading: false
           },
           function() {}
         );
@@ -71,19 +92,34 @@ export default class App extends React.Component {
       );
     }
 
-    // @TODO: replace this with the current cost of eth via API
-    const currentCostOfEth = 89.15;
+    const currentCostOfEth = this.state.ethData.USD;
 
-    const gwei = toGwei(this.state.data.average);
-    const eth = gweiToEth(gwei);
-    const usd = ethToUsd(eth, currentCostOfEth).toFixed(3).toString();
+    const rawGasValue = this.state.gasData.average;
+
+    const gwei = toGwei(rawGasValue);
+
+    const usd = ethToUsd(
+      gweiToEth(toGwei(rawGasValue)),
+      currentCostOfEth
+    ).toFixed(3);
 
     return (
       <Wrapper>
         <Header />
         <View style={styles.container}>
-          <Text style={human.largeTitle}>Gwei {gwei.toString()}</Text>
-          <Text style={human.largeTitle}>USD ${usd}</Text>
+          <TouchableOpacity
+            onPressOut={() =>
+              this.setState(prevState => ({
+                showGasInUsd: !prevState.showGasInUsd
+              }))
+            }
+          >
+            <Text style={human.largeTitle}>
+              {this.state.showGasInUsd
+                ? `$${usd.toString()}`
+                : `Gwei ${gwei.toString()}`}
+            </Text>
+          </TouchableOpacity>
         </View>
       </Wrapper>
     );

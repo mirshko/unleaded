@@ -1,11 +1,11 @@
 {
   "expo": {
     "name": "gasstation",
-    "description": "This project is really great.",
+    "description": "current price of gas for Etherium transactions",
     "slug": "gasstation",
     "privacy": "public",
     "sdkVersion": "31.0.0",
-    "platforms": ["ios", "android"],
+    "platforms": ["ios"],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,7 +21,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.reiner.gasstation"
     }
   }
 }
