@@ -1,4 +1,4 @@
-# gasstation
+# gasstation [wip]
 
 Small project to show the current average cost of a transaction on Etherium in Gwei and USD.
 
