@@ -8,24 +8,22 @@ import {
   ActionSheetIOS,
   Linking
 } from "react-native";
-
 import { human, sanFranciscoWeights, iOSColors } from "react-native-typography";
 
 import Header from "./components/Header";
-
 import TouchableHaptic from "./components/TouchableHaptic";
 
 import { toGwei, gweiToEth, ethToUsd } from "./helpers";
 
 const gasEndpoint = `https://ethgasstation.info/json/ethgasAPI.json`;
-
 const ethEndpoint = `https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD`;
-
 const API_KEY = `8703745dd362001992299bdd13f73d728341894653cb592d4b070bb793c4600c`;
 
 export const Wrapper = ({ children }) => (
   <SafeAreaView style={{ flex: 1 }}>{children}</SafeAreaView>
 );
+
+const Gear = () => <Text style={human.largeTitle}>⚙️</Text>;
 
 const styles = StyleSheet.create({
   container: {
@@ -190,5 +188,3 @@ export default class App extends React.Component {
     );
   }
 }
-
-const Gear = () => <Text style={human.largeTitle}>⚙️</Text>;
