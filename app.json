@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "gasstation",
-    "description": "current price of gas for Etherium transactions",
-    "slug": "gasstation",
+    "name": "Unleaded",
+    "description": "Current regular price of gas for transactions on Ethereum.",
+    "slug": "unleaded",
     "privacy": "public",
     "sdkVersion": "31.0.0",
     "platforms": ["ios"],
@@ -22,7 +22,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.reiner.gasstation"
+      "bundleIdentifier": "com.reiner.unleaded"
     }
   }
 }

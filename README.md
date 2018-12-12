@@ -1,5 +1,5 @@
-# gasstation [wip]
+# unleaded
 
-Small project to show the current average cost of a transaction on Etherium in Gwei and USD.
+Current regular price of gas for transactions on Ethereum
 
 Data is pulled from [cryptocompare.com](https://www.cryptocompare.com/) and [ethgasstation.info](https://ethgasstation.info/).

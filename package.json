@@ -1,7 +1,7 @@
 {
-  "name": "gasstation",
+  "name": "unleaded",
   "main": "./AppEntry.js",
-  "private": true,
+  "private": false,
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -19,5 +19,18 @@
   "devDependencies": {
     "babel-preset-expo": "^5.0.0",
     "prettier": "^1.15.2"
-  }
+  },
+  "description": "Current regular price of gas for transactions on Ethereum",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mirshko/gasstation.git"
+  },
+  "keywords": [],
+  "author": "mirshko <jeff@reiner.design>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mirshko/gasstation/issues"
+  },
+  "homepage": "https://github.com/mirshko/gasstation#readme"
 }
