@@ -24,13 +24,13 @@
   "version": "1.0.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mirshko/gasstation.git"
+    "url": "git+https://github.com/mirshko/unleaded.git"
   },
   "keywords": [],
   "author": "mirshko <jeff@reiner.design>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mirshko/gasstation/issues"
+    "url": "https://github.com/mirshko/unleaded/issues"
   },
-  "homepage": "https://github.com/mirshko/gasstation#readme"
+  "homepage": "https://github.com/mirshko/unleaded#readme"
 }

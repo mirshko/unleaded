@@ -122,7 +122,7 @@ export default class App extends React.Component {
         switch (buttonIndex) {
           case 1:
             Linking.openURL(
-              `https://github.com/mirshko/gasstation/blob/master/README.md`
+              `https://github.com/mirshko/unleaded/blob/master/README.md`
             );
             break;
           case 2:
