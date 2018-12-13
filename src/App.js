@@ -1,7 +1,6 @@
 import React from "react";
 import {
   StyleSheet,
-  SafeAreaView,
   Text,
   View,
   ActivityIndicator,
@@ -10,7 +9,7 @@ import {
 } from "react-native";
 import { human, sanFranciscoWeights, iOSColors } from "react-native-typography";
 
-import Header from "./components/Header";
+import Frame from "./components/Frame";
 import TouchableHaptic from "./components/TouchableHaptic";
 
 import { toGwei, gweiToEth, ethToUsd } from "./helpers";
@@ -18,10 +17,6 @@ import { toGwei, gweiToEth, ethToUsd } from "./helpers";
 const gasEndpoint = `https://ethgasstation.info/json/ethgasAPI.json`;
 const ethEndpoint = `https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD`;
 const API_KEY = `8703745dd362001992299bdd13f73d728341894653cb592d4b070bb793c4600c`;
-
-export const Wrapper = ({ children }) => (
-  <SafeAreaView style={{ flex: 1 }}>{children}</SafeAreaView>
-);
 
 const Gear = () => <Text style={human.largeTitle}>⚙️</Text>;
 
@@ -38,7 +33,8 @@ const styles = StyleSheet.create({
   settingsContainer: {
     flex: 0,
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    marginBottom: 16
   }
 });
 
@@ -141,13 +137,12 @@ export default class App extends React.Component {
   render() {
     if (this.state.hasErrored || this.state.isLoading) {
       return (
-        <Wrapper>
-          <Header />
+        <Frame>
           <View style={styles.container}>
             {this.state.hasErrored && <Text style={styles.title}>⚠️</Text>}
             {this.state.isLoading && <ActivityIndicator />}
           </View>
-        </Wrapper>
+        </Frame>
       );
     }
 
@@ -162,8 +157,7 @@ export default class App extends React.Component {
     const format = val => val.toString();
 
     return (
-      <Wrapper>
-        <Header />
+      <Frame>
         <View style={styles.container}>
           <TouchableHaptic
             onPress={() => {
@@ -184,7 +178,7 @@ export default class App extends React.Component {
             <Gear />
           </TouchableHaptic>
         </View>
-      </Wrapper>
+      </Frame>
     );
   }
 }
