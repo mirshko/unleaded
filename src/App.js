@@ -10,7 +10,7 @@ import {
   Linking
 } from "react-native";
 import { human, sanFranciscoWeights } from "react-native-typography";
-import { isIphoneX } from 'react-native-iphone-x-helper';
+import { isIphoneX } from "react-native-iphone-x-helper";
 
 import Frame from "./components/Frame";
 import TouchableHaptic from "./components/TouchableHaptic";
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "stretch",
-    justifyContent: "center",
+    justifyContent: "center"
   },
   title: {
     ...human.largeTitleObject,
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     flex: 0,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: !isIphoneX() ? 16 : 0 
+    marginBottom: !isIphoneX() ? 16 : 0
   }
 });
 
@@ -47,22 +47,20 @@ export default class App extends React.Component {
     this.state = {
       isLoading: true,
       hasErrored: false,
-      showGasInCurrency: false
+      showGasInCurrency: false,
+      refreshing: false
     };
   }
 
   componentDidMount() {
-    this.fetchData();
+    this.setState({ isLoading: true });
+
+    this.fetchData().then(() => {
+      this.setState({ isLoading: false });
+    });
   }
 
   fetchData() {
-    this.setState(
-      {
-        isLoading: true
-      },
-      function() {}
-    );
-
     return fetch(gasEndpoint)
       .then(res => res.json())
       .then(json => {
@@ -84,8 +82,7 @@ export default class App extends React.Component {
       .then(json => {
         this.setState(
           {
-            ethData: json,
-            isLoading: false
+            ethData: json
           },
           function() {}
         );
@@ -93,7 +90,6 @@ export default class App extends React.Component {
       .catch(error => {
         this.setState(
           {
-            isLoading: false,
             hasErrored: true
           },
           function() {}
@@ -112,8 +108,7 @@ export default class App extends React.Component {
             this.state.showGasInCurrency
               ? "Show Gas In Gwei"
               : "Show Gas In Currency"
-          }`,
-          "Refresh"
+          }`
         ],
         cancelButtonIndex: 0
       },
@@ -129,13 +124,18 @@ export default class App extends React.Component {
               showGasInCurrency: !prevState.showGasInCurrency
             }));
             break;
-          case 3:
-            this.fetchData();
-            break;
         }
       }
     );
   }
+
+  handleRefresh = () => {
+    this.setState({ refreshing: true });
+    
+    this.fetchData().then(() => {
+      this.setState({ refreshing: false });
+    });
+  };
 
   render() {
     if (this.state.hasErrored || this.state.isLoading) {
@@ -143,7 +143,10 @@ export default class App extends React.Component {
         <Frame>
           <View style={styles.container}>
             {this.state.hasErrored && <Text style={styles.title}>⚠️</Text>}
-            {this.state.isLoading && <ActivityIndicator />}
+            {this.state.isLoading && <ActivityIndicator size="large" />}
+          </View>
+          <View style={styles.settingsContainer}>
+            <Gear />
           </View>
         </Frame>
       );
@@ -166,28 +169,30 @@ export default class App extends React.Component {
             refreshControl={
               <RefreshControl
                 refreshing={this.state.refreshing}
-                onRefresh={this._onRefresh}
+                onRefresh={this.handleRefresh}
               />
             }
           >
-            <View style={{
-              minHeight: "100%",
-              alignItems: "center",
-              justifyContent: "center",
-            }}>
-              <TouchableHaptic
-              onPress={() => {
-                this.setState(prevState => ({
-                  showGasInCurrency: !prevState.showGasInCurrency
-                }));
+            <View
+              style={{
+                minHeight: "100%",
+                alignItems: "center",
+                justifyContent: "center"
               }}
             >
-              <Text style={styles.title}>
-                {this.state.showGasInCurrency
-                  ? `$${format(gasInUsd)}`
-                  : `Gwei ${format(gasInGwei)}`}
-              </Text>
-            </TouchableHaptic>
+              <TouchableHaptic
+                onPress={() => {
+                  this.setState(prevState => ({
+                    showGasInCurrency: !prevState.showGasInCurrency
+                  }));
+                }}
+              >
+                <Text style={styles.title}>
+                  {this.state.showGasInCurrency
+                    ? `$${format(gasInUsd)}`
+                    : `Gwei ${format(gasInGwei)}`}
+                </Text>
+              </TouchableHaptic>
             </View>
           </ScrollView>
         </View>
