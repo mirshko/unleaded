@@ -7,7 +7,7 @@ import {
   ActionSheetIOS,
   Linking
 } from "react-native";
-import { human, sanFranciscoWeights, iOSColors } from "react-native-typography";
+import { human, sanFranciscoWeights } from "react-native-typography";
 import { isIphoneX } from 'react-native-iphone-x-helper';
 
 import Frame from "./components/Frame";
