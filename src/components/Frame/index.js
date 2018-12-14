@@ -1,13 +1,17 @@
 import React from "react";
-import { SafeAreaView, StatusBar } from "react-native";
+import { SafeAreaView, StatusBar, View } from "react-native";
 
 import Header from "../Header";
 
 export const Wrapper = ({ children }) => (
-  <SafeAreaView style={{ flex: 1 }}>
-    <StatusBar barStyle="dark-content" />
-    {children}
-  </SafeAreaView>
+  <View style={{ backgroundColor: "black", flex: 1 }}>
+    <SafeAreaView
+      style={{ backgroundColor: "white", borderRadius: 10, flex: 1 }}
+    >
+      <StatusBar barStyle="dark-content" />
+      {children}
+    </SafeAreaView>
+  </View>
 );
 
 const Frame = ({ children }) => (
