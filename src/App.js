@@ -23,6 +23,14 @@ const API_KEY = `8703745dd362001992299bdd13f73d728341894653cb592d4b070bb793c4600
 
 const Gear = () => <Text style={human.largeTitle}>⚙️</Text>;
 
+const Settings = ({ action }) => (
+  <View style={styles.settingsContainer}>
+    <TouchableHaptic impact="Light" onPress={action}>
+      <Gear />
+    </TouchableHaptic>
+  </View>
+);
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -131,7 +139,7 @@ export default class App extends React.Component {
 
   handleRefresh = () => {
     this.setState({ refreshing: true });
-    
+
     this.fetchData().then(() => {
       this.setState({ refreshing: false });
     });
@@ -145,9 +153,7 @@ export default class App extends React.Component {
             {this.state.hasErrored && <Text style={styles.title}>⚠️</Text>}
             {this.state.isLoading && <ActivityIndicator size="large" />}
           </View>
-          <View style={styles.settingsContainer}>
-            <Gear />
-          </View>
+          <Settings action={() => this.openSettings()} />
         </Frame>
       );
     }
@@ -197,11 +203,7 @@ export default class App extends React.Component {
           </ScrollView>
         </View>
 
-        <View style={styles.settingsContainer}>
-          <TouchableHaptic impact="Light" onPress={() => this.openSettings()}>
-            <Gear />
-          </TouchableHaptic>
-        </View>
+        <Settings action={() => this.openSettings()} />
       </Frame>
     );
   }
