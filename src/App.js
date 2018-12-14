@@ -8,6 +8,7 @@ import {
   Linking
 } from "react-native";
 import { human, sanFranciscoWeights, iOSColors } from "react-native-typography";
+import { isIphoneX } from 'react-native-iphone-x-helper';
 
 import Frame from "./components/Frame";
 import TouchableHaptic from "./components/TouchableHaptic";
@@ -34,7 +35,7 @@ const styles = StyleSheet.create({
     flex: 0,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 16
+    marginBottom: !isIphoneX() ? 16 : 0 
   }
 });
 
