@@ -28,7 +28,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "stretch",
     justifyContent: "center",
-    backgroundColor: "blue"
   },
   title: {
     ...human.largeTitleObject,
@@ -164,7 +163,6 @@ export default class App extends React.Component {
       <Frame>
         <View style={styles.container}>
           <ScrollView
-            style={{ backgroundColor: "red" }}
             refreshControl={
               <RefreshControl
                 refreshing={this.state.refreshing}
@@ -176,7 +174,6 @@ export default class App extends React.Component {
               minHeight: "100%",
               alignItems: "center",
               justifyContent: "center",
-              backgroundColor: "purple"
             }}>
               <TouchableHaptic
               onPress={() => {
