@@ -4,6 +4,8 @@ import {
   Text,
   View,
   ActivityIndicator,
+  ScrollView,
+  RefreshControl,
   ActionSheetIOS,
   Linking
 } from "react-native";
@@ -24,8 +26,9 @@ const Gear = () => <Text style={human.largeTitle}>⚙️</Text>;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center"
+    alignItems: "stretch",
+    justifyContent: "center",
+    backgroundColor: "blue"
   },
   title: {
     ...human.largeTitleObject,
@@ -160,20 +163,38 @@ export default class App extends React.Component {
     return (
       <Frame>
         <View style={styles.container}>
-          <TouchableHaptic
-            onPress={() => {
-              this.setState(prevState => ({
-                showGasInCurrency: !prevState.showGasInCurrency
-              }));
-            }}
+          <ScrollView
+            style={{ backgroundColor: "red" }}
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={this._onRefresh}
+              />
+            }
           >
-            <Text style={styles.title}>
-              {this.state.showGasInCurrency
-                ? `$${format(gasInUsd)}`
-                : `Gwei ${format(gasInGwei)}`}
-            </Text>
-          </TouchableHaptic>
+            <View style={{
+              minHeight: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "purple"
+            }}>
+              <TouchableHaptic
+              onPress={() => {
+                this.setState(prevState => ({
+                  showGasInCurrency: !prevState.showGasInCurrency
+                }));
+              }}
+            >
+              <Text style={styles.title}>
+                {this.state.showGasInCurrency
+                  ? `$${format(gasInUsd)}`
+                  : `Gwei ${format(gasInGwei)}`}
+              </Text>
+            </TouchableHaptic>
+            </View>
+          </ScrollView>
         </View>
+
         <View style={styles.settingsContainer}>
           <TouchableHaptic impact="Light" onPress={() => this.openSettings()}>
             <Gear />
