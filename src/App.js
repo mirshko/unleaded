@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   ScrollView,
   RefreshControl,
+  FlatList,
   ActionSheetIOS,
   Linking
 } from "react-native";
@@ -15,19 +16,26 @@ import { isIphoneX } from "react-native-iphone-x-helper";
 import Frame from "./components/Frame";
 import TouchableHaptic from "./components/TouchableHaptic";
 
-import { toGwei, gweiToEth, ethToUsd } from "./helpers";
+import { formatGwei, formatCurrency } from "./helpers";
 
 const gasEndpoint = `https://ethgasstation.info/json/ethgasAPI.json`;
 const ethEndpoint = `https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD`;
 const API_KEY = `8703745dd362001992299bdd13f73d728341894653cb592d4b070bb793c4600c`;
 
-const Gear = () => <Text style={human.largeTitle}>⚙️</Text>;
-
 const Settings = ({ action }) => (
   <View style={styles.settingsContainer}>
     <TouchableHaptic impact="Light" onPress={action}>
-      <Gear />
+      <Text style={human.largeTitle}>⚙️</Text>
     </TouchableHaptic>
+  </View>
+);
+
+const GasPrice = ({ speed, gas, currency, toggleFormat }) => (
+  <View style={styles.center}>
+    <Text style={human.title1}>{speed}</Text>
+    <Text style={styles.title}>
+      {toggleFormat ? formatCurrency(gas, currency) : formatGwei(gas)}
+    </Text>
   </View>
 );
 
@@ -35,6 +43,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "stretch",
+    justifyContent: "center"
+  },
+  center: {
+    alignItems: "center",
     justifyContent: "center"
   },
   title: {
@@ -106,7 +118,7 @@ export default class App extends React.Component {
       });
   }
 
-  openSettings() {
+  openSettings = () => {
     ActionSheetIOS.showActionSheetWithOptions(
       {
         options: [
@@ -135,7 +147,7 @@ export default class App extends React.Component {
         }
       }
     );
-  }
+  };
 
   handleRefresh = () => {
     this.setState({ refreshing: true });
@@ -153,20 +165,14 @@ export default class App extends React.Component {
             {this.state.hasErrored && <Text style={styles.title}>⚠️</Text>}
             {this.state.isLoading && <ActivityIndicator size="large" />}
           </View>
-          <Settings action={() => this.openSettings()} />
+          <Settings action={this.openSettings} />
         </Frame>
       );
     }
 
-    const currentCostOfEth = this.state.ethData;
-    const rawAverageGas = this.state.gasData.average;
+    const { USD } = this.state.ethData;
 
-    const gasInEth = gweiToEth(toGwei(rawAverageGas));
-
-    const gasInGwei = toGwei(rawAverageGas);
-    const gasInUsd = ethToUsd(gasInEth, currentCostOfEth.USD).toFixed(3);
-
-    const format = val => val.toString();
+    const { fast, safeLow, average } = this.state.gasData;
 
     return (
       <Frame>
@@ -181,30 +187,54 @@ export default class App extends React.Component {
           >
             <View
               style={{
-                minHeight: "100%",
-                alignItems: "center",
-                justifyContent: "center"
+                ...styles.center,
+                minHeight: "100%"
               }}
             >
-              <TouchableHaptic
-                onPress={() => {
-                  this.setState(prevState => ({
-                    showGasInCurrency: !prevState.showGasInCurrency
-                  }));
-                }}
-              >
-                <Text style={styles.title}>
-                  {this.state.showGasInCurrency
-                    ? `$${format(gasInUsd)}`
-                    : `Gwei ${format(gasInGwei)}`}
-                </Text>
-              </TouchableHaptic>
+              <FlatList
+                horizontal={true}
+                data={[
+                  {
+                    key: "safeLow",
+                    speed: "🐢",
+                    gas: safeLow
+                  },
+                  {
+                    key: "average",
+                    speed: "🦆",
+                    gas: average
+                  },
+                  {
+                    key: "fast",
+                    speed: "🐇",
+                    gas: fast
+                  }
+                ]}
+                renderItem={({ item }) => (
+                  <GasPrice
+                    speed={item.speed}
+                    gas={item.gas}
+                    currency={USD}
+                    key={item.key}
+                    toggleFormat={this.state.showGasInCurrency}
+                  />
+                )}
+              />
             </View>
           </ScrollView>
         </View>
 
-        <Settings action={() => this.openSettings()} />
+        <Settings action={this.openSettings} />
       </Frame>
     );
   }
 }
+
+// <TouchableHaptic
+//   onPress={() => {
+//     this.setState(prevState => ({
+//       showGasInCurrency: !prevState.showGasInCurrency
+//     }));
+//   }}
+// >
+// </TouchableHaptic>
