@@ -6,12 +6,13 @@ import {
   ActivityIndicator,
   ScrollView,
   RefreshControl,
-  FlatList,
   ActionSheetIOS,
+  Dimensions,
   Linking
 } from "react-native";
 import { human, sanFranciscoWeights } from "react-native-typography";
 import { isIphoneX } from "react-native-iphone-x-helper";
+import Carousel, { Pagination } from "react-native-snap-carousel";
 
 import Frame from "./components/Frame";
 import TouchableHaptic from "./components/TouchableHaptic";
@@ -31,10 +32,16 @@ const Settings = ({ action }) => (
 );
 
 const GasPrice = ({ speed, gas, currency, toggleFormat }) => (
-  <View style={styles.center}>
+  <View
+    style={{
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center"
+    }}
+  >
     <Text style={human.title1}>{speed}</Text>
     <Text style={styles.title}>
-      {toggleFormat ? formatCurrency(gas, currency) : formatGwei(gas)}
+      {toggleFormat ? `$${formatCurrency(gas, currency)}` : formatGwei(gas)}
     </Text>
   </View>
 );
@@ -68,7 +75,8 @@ export default class App extends React.Component {
       isLoading: true,
       hasErrored: false,
       showGasInCurrency: false,
-      refreshing: false
+      refreshing: false,
+      activeSlide: 0
     };
   }
 
@@ -157,6 +165,42 @@ export default class App extends React.Component {
     });
   };
 
+  renderItem = ({ item, index }) => {
+    return (
+      <GasPrice
+        speed={item.speed}
+        gas={item.gas}
+        currency={this.state.ethData.USD}
+        key={item.key}
+        toggleFormat={this.state.showGasInCurrency}
+      />
+    );
+  };
+
+  get pagination() {
+    const { activeSlide } = this.state;
+    return (
+      <Pagination
+        dotsLength={3}
+        activeDotIndex={activeSlide}
+        dotStyle={{
+          width: 24,
+          height: 2,
+          backgroundColor: "black",
+          marginHorizontal: 0,
+          borderRadius: 0,
+          padding: 0
+        }}
+        containerStyle={{
+          margin: 0,
+          padding: 0
+        }}
+        inactiveDotOpacity={0.32}
+        inactiveDotScale={1}
+      />
+    );
+  }
+
   render() {
     if (this.state.hasErrored || this.state.isLoading) {
       return (
@@ -170,9 +214,27 @@ export default class App extends React.Component {
       );
     }
 
-    const { USD } = this.state.ethData;
+    const deviceWidth = Dimensions.get("window").width;
 
     const { fast, safeLow, average } = this.state.gasData;
+
+    const gasSpeeds = [
+      {
+        key: "safeLow",
+        speed: "🐢",
+        gas: safeLow
+      },
+      {
+        key: "average",
+        speed: "🦆",
+        gas: average
+      },
+      {
+        key: "fast",
+        speed: "🐇",
+        gas: fast
+      }
+    ];
 
     return (
       <Frame>
@@ -187,39 +249,24 @@ export default class App extends React.Component {
           >
             <View
               style={{
-                ...styles.center,
                 minHeight: "100%"
               }}
             >
-              <FlatList
-                horizontal={true}
-                data={[
-                  {
-                    key: "safeLow",
-                    speed: "🐢",
-                    gas: safeLow
-                  },
-                  {
-                    key: "average",
-                    speed: "🦆",
-                    gas: average
-                  },
-                  {
-                    key: "fast",
-                    speed: "🐇",
-                    gas: fast
-                  }
-                ]}
-                renderItem={({ item }) => (
-                  <GasPrice
-                    speed={item.speed}
-                    gas={item.gas}
-                    currency={USD}
-                    key={item.key}
-                    toggleFormat={this.state.showGasInCurrency}
-                  />
-                )}
+              <Carousel
+                ref={c => {
+                  this._carousel = c;
+                }}
+                containerCustomStyle={{}}
+                data={gasSpeeds}
+                renderItem={this.renderItem}
+                sliderWidth={deviceWidth}
+                itemWidth={deviceWidth}
+                useScrollView={true}
+                inactiveSlideScale={1}
+                inactiveSlideOpacity={1}
+                onSnapToItem={index => this.setState({ activeSlide: index })}
               />
+              {this.pagination}
             </View>
           </ScrollView>
         </View>
