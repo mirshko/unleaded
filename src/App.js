@@ -1,53 +1,26 @@
 import React from "react";
 import {
-  StyleSheet,
   Text,
   View,
   ActivityIndicator,
-  ScrollView,
   RefreshControl,
   ActionSheetIOS,
   Linking
 } from "react-native";
-import { human, sanFranciscoWeights } from "react-native-typography";
-import { isIphoneX } from "react-native-iphone-x-helper";
+import { human } from "react-native-typography";
 
 import Frame from "./components/Frame";
+import Window from "./components/Window";
 import TouchableHaptic from "./components/TouchableHaptic";
+import Settings from "./components/Settings";
+import Pane from "./components/Pane";
+import Billboard from "./components/Billboard";
 
-import { toGwei, gweiToEth, ethToUsd } from "./helpers";
+import { formatGwei, formatCurrency } from "./helpers";
 
 const gasEndpoint = `https://ethgasstation.info/json/ethgasAPI.json`;
 const ethEndpoint = `https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD`;
 const API_KEY = `8703745dd362001992299bdd13f73d728341894653cb592d4b070bb793c4600c`;
-
-const Gear = () => <Text style={human.largeTitle}>⚙️</Text>;
-
-const Settings = ({ action }) => (
-  <View style={styles.settingsContainer}>
-    <TouchableHaptic impact="Light" onPress={action}>
-      <Gear />
-    </TouchableHaptic>
-  </View>
-);
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "stretch",
-    justifyContent: "center"
-  },
-  title: {
-    ...human.largeTitleObject,
-    ...sanFranciscoWeights.heavy
-  },
-  settingsContainer: {
-    flex: 0,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: !isIphoneX() ? 16 : 0
-  }
-});
 
 export default class App extends React.Component {
   constructor(props) {
@@ -72,12 +45,7 @@ export default class App extends React.Component {
     return fetch(gasEndpoint)
       .then(res => res.json())
       .then(json => {
-        this.setState(
-          {
-            gasData: json
-          },
-          function() {}
-        );
+        this.setState({ gasData: json });
       })
       .then(() =>
         fetch(ethEndpoint, {
@@ -88,25 +56,20 @@ export default class App extends React.Component {
       )
       .then(res => res.json())
       .then(json => {
-        this.setState(
-          {
-            ethData: json
-          },
-          function() {}
-        );
+        this.setState({ ethData: json });
       })
       .catch(error => {
-        this.setState(
-          {
-            hasErrored: true
-          },
-          function() {}
-        );
-        console.error(error);
+        this.setState({ hasErrored: true });
       });
   }
 
-  openSettings() {
+  toggleGasFormat() {
+    this.setState(prevState => ({
+      showGasInCurrency: !prevState.showGasInCurrency
+    }));
+  }
+
+  openSettings = () => {
     ActionSheetIOS.showActionSheetWithOptions(
       {
         options: [
@@ -128,14 +91,12 @@ export default class App extends React.Component {
             );
             break;
           case 2:
-            this.setState(prevState => ({
-              showGasInCurrency: !prevState.showGasInCurrency
-            }));
+            this.toggleGasFormat();
             break;
         }
       }
     );
-  }
+  };
 
   handleRefresh = () => {
     this.setState({ refreshing: true });
@@ -149,61 +110,64 @@ export default class App extends React.Component {
     if (this.state.hasErrored || this.state.isLoading) {
       return (
         <Frame>
-          <View style={styles.container}>
-            {this.state.hasErrored && <Text style={styles.title}>⚠️</Text>}
+          <Pane>
+            {this.state.hasErrored && <Text style={human.largeTitle}>⚠️</Text>}
             {this.state.isLoading && <ActivityIndicator size="large" />}
-          </View>
-          <Settings action={() => this.openSettings()} />
+          </Pane>
+          <Settings action={this.openSettings} />
         </Frame>
       );
     }
 
-    const currentCostOfEth = this.state.ethData;
-    const rawAverageGas = this.state.gasData.average;
+    const { fast, safeLow, average } = this.state.gasData;
 
-    const gasInEth = gweiToEth(toGwei(rawAverageGas));
-
-    const gasInGwei = toGwei(rawAverageGas);
-    const gasInUsd = ethToUsd(gasInEth, currentCostOfEth.USD).toFixed(3);
-
-    const format = val => val.toString();
+    const gasSpeeds = [
+      {
+        key: "safeLow",
+        speed: "🚜",
+        gas: safeLow
+      },
+      {
+        key: "average",
+        speed: "🚗",
+        gas: average
+      },
+      {
+        key: "fast",
+        speed: "🏎",
+        gas: fast
+      }
+    ];
 
     return (
       <Frame>
-        <View style={styles.container}>
-          <ScrollView
-            refreshControl={
-              <RefreshControl
-                refreshing={this.state.refreshing}
-                onRefresh={this.handleRefresh}
-              />
-            }
-          >
-            <View
-              style={{
-                minHeight: "100%",
-                alignItems: "center",
-                justifyContent: "center"
-              }}
-            >
-              <TouchableHaptic
-                onPress={() => {
-                  this.setState(prevState => ({
-                    showGasInCurrency: !prevState.showGasInCurrency
-                  }));
-                }}
-              >
-                <Text style={styles.title}>
-                  {this.state.showGasInCurrency
-                    ? `$${format(gasInUsd)}`
-                    : `Gwei ${format(gasInGwei)}`}
-                </Text>
-              </TouchableHaptic>
-            </View>
-          </ScrollView>
-        </View>
-
-        <Settings action={() => this.openSettings()} />
+        <Window
+          refreshFunc={this.handleRefresh}
+          refreshingState={this.state.refreshing}
+        >
+          {gasSpeeds.map(item => (
+            <Pane key={item.key}>
+              <Pane flex={1}>
+                <Text style={human.largeTitle}>{item.speed}</Text>
+              </Pane>
+              <Pane flex={2} justifyContent="start">
+                <TouchableHaptic onPress={() => this.toggleGasFormat()}>
+                  <Pane flex={0}>
+                    <Billboard>
+                      {this.state.showGasInCurrency
+                        ? `$${formatCurrency(item.gas, this.state.ethData.USD)}`
+                        : formatGwei(item.gas)}
+                    </Billboard>
+                    {!this.state.showGasInCurrency && (
+                      <Text style={human.title3}>Gwei</Text>
+                    )}
+                  </Pane>
+                </TouchableHaptic>
+              </Pane>
+            </Pane>
+          ))}
+        </Window>
+        <Settings action={this.openSettings} />
       </Frame>
     );
   }
