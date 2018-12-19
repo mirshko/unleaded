@@ -16,10 +16,10 @@ import Settings from "./components/Settings";
 import Pane from "./components/Pane";
 import Billboard from "./components/Billboard";
 
-import { formatGwei, formatCurrency } from "./helpers";
+import { formatGwei, formatCurrency, currencies } from "./helpers";
 
 const gasEndpoint = `https://ethgasstation.info/json/ethgasAPI.json`;
-const ethEndpoint = `https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD`;
+const ethEndpoint = `https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD,EUR,GBP`;
 const API_KEY = `8703745dd362001992299bdd13f73d728341894653cb592d4b070bb793c4600c`;
 
 export default class App extends React.Component {
@@ -29,6 +29,7 @@ export default class App extends React.Component {
       isLoading: true,
       hasErrored: false,
       showGasInCurrency: false,
+      defaultCurrency: "USD",
       refreshing: false
     };
   }
@@ -121,6 +122,8 @@ export default class App extends React.Component {
 
     const { fast, safeLow, average } = this.state.gasData;
 
+    const locale = this.state.defaultCurrency;
+
     const gasSpeeds = [
       {
         key: "safeLow",
@@ -155,7 +158,12 @@ export default class App extends React.Component {
                   <Pane flex={0}>
                     <Billboard>
                       {this.state.showGasInCurrency
-                        ? `$${formatCurrency(item.gas, this.state.ethData.USD)}`
+                        ? `${
+                            currencies[locale].symbol
+                          }${formatCurrency(
+                            item.gas,
+                            this.state.ethData[locale]
+                          )}`
                         : formatGwei(item.gas)}
                     </Billboard>
                     {!this.state.showGasInCurrency && (

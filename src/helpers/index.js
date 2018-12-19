@@ -16,3 +16,18 @@ export const formatCurrency = (raw, currency) =>
   ethToCurrency(gweiToEth(toGwei(raw)), currency)
     .toFixed(3)
     .toString();
+
+export const currencies = {
+  USD: {
+    symbol: "$",
+    name: "USD"
+  },
+  EUR: {
+    symbol: "€",
+    name: "EUR"
+  },
+  GBP: {
+    symbol: "£",
+    name: "GBP"
+  }
+};
