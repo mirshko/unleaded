@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Unleaded",
-    "description": "Current regular price of gas for transactions on Ethereum.",
+    "description": "Current prices of gas for transactions on Ethereum",
     "slug": "unleaded",
     "privacy": "public",
     "sdkVersion": "31.0.0",

@@ -22,7 +22,7 @@
     "babel-preset-expo": "^5.0.0",
     "prettier": "^1.15.2"
   },
-  "description": "Current regular price of gas for transactions on Ethereum",
+  "description": "Current prices of gas for transactions on Ethereum",
   "version": "1.0.2",
   "repository": {
     "type": "git",
