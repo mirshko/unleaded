@@ -3,6 +3,8 @@ import { ScrollView, RefreshControl } from "react-native";
 import PropTypes from "prop-types";
 import Swiper from "react-native-swiper";
 
+import theme from "../../styles/theme";
+
 const Window = ({ children, refreshFunc, refreshingState }) => (
   <ScrollView
     contentContainerStyle={{ flexGrow: 1 }}
@@ -13,7 +15,7 @@ const Window = ({ children, refreshFunc, refreshingState }) => (
     <Swiper
       height={0}
       index={1}
-      activeDotColor="black"
+      activeDotColor={theme.pump}
       loop={false}
       bounces={true}
     >
