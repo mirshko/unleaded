@@ -29,7 +29,7 @@ export default class App extends React.Component {
       isLoading: true,
       hasErrored: false,
       showGasInCurrency: false,
-      defaultCurrency: "USD",
+      nativeCurrency: "USD",
       refreshing: false
     };
   }
@@ -70,16 +70,17 @@ export default class App extends React.Component {
     }));
   }
 
-  openSettings = () => {
+  openSettings() {
     ActionSheetIOS.showActionSheetWithOptions(
       {
         options: [
           "Cancel",
           "About",
+          "Change your currency",
           `${
             this.state.showGasInCurrency
-              ? "Show Gas In Gwei"
-              : "Show Gas In Currency"
+              ? "Show gas in Gwei"
+              : "Show gas in currency"
           }`
         ],
         cancelButtonIndex: 0
@@ -92,12 +93,42 @@ export default class App extends React.Component {
             );
             break;
           case 2:
+            this.changeCurrency();
+            break;
+          case 3:
             this.toggleGasFormat();
             break;
         }
       }
     );
-  };
+  }
+
+  changeCurrency() {
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: [
+          "Cancel",
+          "USD",
+          "GBP",
+          "EUR",
+        ],
+        cancelButtonIndex: 0
+      },
+      buttonIndex => {
+        switch (buttonIndex) {
+          case 1:
+            this.setState({ nativeCurrency: "USD" });
+            break;
+          case 2:
+            this.setState({ nativeCurrency: "GBP" });
+            break;
+          case 3:
+            this.setState({ nativeCurrency: "EUR" });
+            break;
+        }
+      }
+    );
+  }
 
   handleRefresh = () => {
     this.setState({ refreshing: true });
@@ -115,14 +146,14 @@ export default class App extends React.Component {
             {this.state.hasErrored && <Text style={human.largeTitle}>⚠️</Text>}
             {this.state.isLoading && <ActivityIndicator size="large" />}
           </Pane>
-          <Settings action={this.openSettings} />
+          <Settings action={() => this.openSettings()} />
         </Frame>
       );
     }
 
     const { fast, safeLow, average } = this.state.gasData;
 
-    const locale = this.state.defaultCurrency;
+    const locale = this.state.nativeCurrency;
 
     const gasSpeeds = [
       {
@@ -158,9 +189,7 @@ export default class App extends React.Component {
                   <Pane flex={0}>
                     <Billboard>
                       {this.state.showGasInCurrency
-                        ? `${
-                            currencies[locale].symbol
-                          }${formatCurrency(
+                        ? `${currencies[locale].symbol}${formatCurrency(
                             item.gas,
                             this.state.ethData[locale]
                           )}`
@@ -175,7 +204,7 @@ export default class App extends React.Component {
             </Pane>
           ))}
         </Window>
-        <Settings action={this.openSettings} />
+        <Settings action={() => this.openSettings()} />
       </Frame>
     );
   }
