@@ -6,13 +6,13 @@ import {
   ActivityIndicator,
   ScrollView,
   RefreshControl,
+  FlatList,
   ActionSheetIOS,
   Dimensions,
   Linking
 } from "react-native";
 import { human, sanFranciscoWeights } from "react-native-typography";
 import { isIphoneX } from "react-native-iphone-x-helper";
-import Carousel, { Pagination } from "react-native-snap-carousel";
 
 import Frame from "./components/Frame";
 import TouchableHaptic from "./components/TouchableHaptic";
@@ -35,6 +35,7 @@ const GasPrice = ({ speed, gas, currency, toggleFormat }) => (
   <View
     style={{
       flex: 1,
+      width: Dimensions.get("window").width,
       alignItems: "center",
       justifyContent: "center"
     }}
@@ -177,30 +178,6 @@ export default class App extends React.Component {
     );
   };
 
-  get pagination() {
-    const { activeSlide } = this.state;
-    return (
-      <Pagination
-        dotsLength={3}
-        activeDotIndex={activeSlide}
-        dotStyle={{
-          width: 24,
-          height: 2,
-          backgroundColor: "black",
-          marginHorizontal: 0,
-          borderRadius: 0,
-          padding: 0
-        }}
-        containerStyle={{
-          margin: 0,
-          padding: 0
-        }}
-        inactiveDotOpacity={0.32}
-        inactiveDotScale={1}
-      />
-    );
-  }
-
   render() {
     if (this.state.hasErrored || this.state.isLoading) {
       return (
@@ -221,17 +198,17 @@ export default class App extends React.Component {
     const gasSpeeds = [
       {
         key: "safeLow",
-        speed: "🐢",
+        speed: "🚜",
         gas: safeLow
       },
       {
         key: "average",
-        speed: "🦆",
+        speed: "🚗",
         gas: average
       },
       {
         key: "fast",
-        speed: "🐇",
+        speed: "🏎",
         gas: fast
       }
     ];
@@ -252,21 +229,12 @@ export default class App extends React.Component {
                 minHeight: "100%"
               }}
             >
-              <Carousel
-                ref={c => {
-                  this._carousel = c;
-                }}
-                containerCustomStyle={{}}
-                data={gasSpeeds}
+              <FlatList
+                style={{ width: deviceWidth }}
+                horizontal={true}
                 renderItem={this.renderItem}
-                sliderWidth={deviceWidth}
-                itemWidth={deviceWidth}
-                useScrollView={true}
-                inactiveSlideScale={1}
-                inactiveSlideOpacity={1}
-                onSnapToItem={index => this.setState({ activeSlide: index })}
+                data={gasSpeeds}
               />
-              {this.pagination}
             </View>
           </ScrollView>
         </View>
