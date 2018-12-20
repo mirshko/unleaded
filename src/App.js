@@ -7,7 +7,7 @@ import {
   ActionSheetIOS,
   Linking
 } from "react-native";
-import { human } from "react-native-typography";
+import { human, sanFranciscoWeights } from "react-native-typography";
 import store from "react-native-simple-store";
 
 import Frame from "./components/Frame";
@@ -17,7 +17,13 @@ import Settings from "./components/Settings";
 import Pane from "./components/Pane";
 import Billboard from "./components/Billboard";
 
-import { formatGwei, formatCurrency, currencies, loadConfig } from "./helpers";
+import {
+  formatGwei,
+  formatCurrency,
+  formatTime,
+  currencies,
+  loadConfig
+} from "./helpers";
 
 const gasEndpoint = `https://ethgasstation.info/json/ethgasAPI.json`;
 const ethEndpoint = `https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD,EUR,GBP`;
@@ -167,7 +173,14 @@ export default class App extends React.Component {
       );
     }
 
-    const { fast, safeLow, average } = this.state.gasData;
+    const {
+      fast,
+      safeLow,
+      average,
+      safeLowWait,
+      avgWait,
+      fastWait
+    } = this.state.gasData;
 
     const locale = this.state.nativeCurrency;
 
@@ -175,17 +188,20 @@ export default class App extends React.Component {
       {
         key: "safeLow",
         speed: "🚜",
-        gas: safeLow
+        gas: safeLow,
+        wait: safeLowWait
       },
       {
         key: "average",
         speed: "🚗",
-        gas: average
+        gas: average,
+        wait: avgWait
       },
       {
         key: "fast",
         speed: "🏎",
-        gas: fast
+        gas: fast,
+        wait: fastWait
       }
     ];
 
@@ -197,10 +213,10 @@ export default class App extends React.Component {
         >
           {gasSpeeds.map(item => (
             <Pane key={item.key}>
-              <Pane flex={1}>
+              <Pane>
                 <Text style={human.largeTitle}>{item.speed}</Text>
               </Pane>
-              <Pane flex={2} justifyContent="start">
+              <Pane flex={2}>
                 <TouchableHaptic onPress={() => this.toggleGasFormat()}>
                   <Pane flex={0}>
                     <Billboard>
@@ -216,6 +232,17 @@ export default class App extends React.Component {
                     )}
                   </Pane>
                 </TouchableHaptic>
+              </Pane>
+              <Pane flex={2} justifyContent="start">
+                <Text style={human.largeTitle}>⏱</Text>
+                <Text
+                  style={{
+                    ...human.title1Object,
+                    ...sanFranciscoWeights.black
+                  }}
+                >
+                  {formatTime(item.wait)}
+                </Text>
               </Pane>
             </Pane>
           ))}
