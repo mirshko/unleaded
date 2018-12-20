@@ -188,18 +188,21 @@ export default class App extends React.Component {
     const gasSpeeds = [
       {
         key: "safeLow",
+        name: "Slow",
         speed: "🚜",
         gas: safeLow,
         wait: safeLowWait
       },
       {
         key: "average",
+        name: "Average",
         speed: "🚗",
         gas: average,
         wait: avgWait
       },
       {
         key: "fast",
+        name: "Fast",
         speed: "🏎",
         gas: fast,
         wait: fastWait
