@@ -8,6 +8,7 @@ import {
   Linking
 } from "react-native";
 import { human } from "react-native-typography";
+import store from "react-native-simple-store";
 
 import Frame from "./components/Frame";
 import Window from "./components/Window";
@@ -16,7 +17,7 @@ import Settings from "./components/Settings";
 import Pane from "./components/Pane";
 import Billboard from "./components/Billboard";
 
-import { formatGwei, formatCurrency, currencies } from "./helpers";
+import { formatGwei, formatCurrency, currencies, loadConfig } from "./helpers";
 
 const gasEndpoint = `https://ethgasstation.info/json/ethgasAPI.json`;
 const ethEndpoint = `https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD,EUR,GBP`;
@@ -39,6 +40,17 @@ export default class App extends React.Component {
 
     this.fetchData().then(() => {
       this.setState({ isLoading: false });
+    });
+
+    store.get("config").then(config => {
+      if (loadConfig(config))
+        this.setState(prevState => ({
+          showGasInCurrency:
+            config.showGasInCurrency || prevState.showGasInCurrency,
+          nativeCurrency: config.nativeCurrency || prevState.nativeCurrency
+        }));
+
+      return;
     });
   }
 
@@ -65,9 +77,15 @@ export default class App extends React.Component {
   }
 
   toggleGasFormat() {
-    this.setState(prevState => ({
-      showGasInCurrency: !prevState.showGasInCurrency
-    }));
+    this.setState(prevState => {
+      store.update("config", {
+        showGasInCurrency: !prevState.showGasInCurrency
+      });
+
+      return {
+        showGasInCurrency: !prevState.showGasInCurrency
+      };
+    });
   }
 
   openSettings() {
@@ -106,24 +124,22 @@ export default class App extends React.Component {
   changeCurrency() {
     ActionSheetIOS.showActionSheetWithOptions(
       {
-        options: [
-          "Cancel",
-          "USD",
-          "GBP",
-          "EUR",
-        ],
+        options: ["Cancel", "USD", "GBP", "EUR"],
         cancelButtonIndex: 0
       },
       buttonIndex => {
         switch (buttonIndex) {
           case 1:
             this.setState({ nativeCurrency: "USD" });
+            store.update("config", { nativeCurrency: "USD" });
             break;
           case 2:
             this.setState({ nativeCurrency: "GBP" });
+            store.update("config", { nativeCurrency: "GBP" });
             break;
           case 3:
             this.setState({ nativeCurrency: "EUR" });
+            store.update("config", { nativeCurrency: "EUR" });
             break;
         }
       }
