@@ -17,7 +17,13 @@ import Settings from "./components/Settings";
 import Pane from "./components/Pane";
 import Billboard from "./components/Billboard";
 
-import { formatGwei, formatCurrency, currencies, loadConfig } from "./helpers";
+import {
+  formatGwei,
+  formatCurrency,
+  formatTime,
+  currencies,
+  loadConfig
+} from "./helpers";
 
 const gasEndpoint = `https://ethgasstation.info/json/ethgasAPI.json`;
 const ethEndpoint = `https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD,EUR,GBP`;
@@ -235,7 +241,7 @@ export default class App extends React.Component {
                     ...sanFranciscoWeights.black
                   }}
                 >
-                  {item.wait}
+                  {formatTime(item.wait)}
                 </Text>
               </Pane>
             </Pane>

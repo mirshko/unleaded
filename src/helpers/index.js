@@ -34,3 +34,6 @@ export const currencies = {
     name: "GBP"
   }
 };
+
+export const formatTime = time =>
+  time > 1.0 ? `~${time} mins` : `~${time * 60} secs`;
