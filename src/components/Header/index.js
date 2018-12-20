@@ -1,11 +1,12 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { human } from "react-native-typography";
 import { isIphoneX } from "react-native-iphone-x-helper";
+
+import Emoji from "../Emoji";
 
 const Header = () => (
   <View style={styles.header}>
-    <Text style={human.largeTitle}>⛽️</Text>
+    <Emoji>⛽️</Emoji>
   </View>
 );
 

@@ -7,7 +7,7 @@ import {
   ActionSheetIOS,
   Linking
 } from "react-native";
-import { human, sanFranciscoWeights } from "react-native-typography";
+import { human } from "react-native-typography";
 import store from "react-native-simple-store";
 
 import Frame from "./components/Frame";
@@ -16,6 +16,7 @@ import TouchableHaptic from "./components/TouchableHaptic";
 import Settings from "./components/Settings";
 import Pane from "./components/Pane";
 import Billboard from "./components/Billboard";
+import Emoji from "./components/Emoji";
 
 import {
   formatGwei,
@@ -165,7 +166,7 @@ export default class App extends React.Component {
       return (
         <Frame>
           <Pane>
-            {this.state.hasErrored && <Text style={human.largeTitle}>⚠️</Text>}
+            {this.state.hasErrored && <Emoji>⚠️</Emoji>}
             {this.state.isLoading && <ActivityIndicator size="large" />}
           </Pane>
           <Settings action={() => this.openSettings()} />
@@ -214,7 +215,7 @@ export default class App extends React.Component {
           {gasSpeeds.map(item => (
             <Pane key={item.key}>
               <Pane>
-                <Text style={human.largeTitle}>{item.speed}</Text>
+                <Emoji>{item.speed}</Emoji>
               </Pane>
               <Pane flex={2}>
                 <TouchableHaptic onPress={() => this.toggleGasFormat()}>
@@ -234,15 +235,8 @@ export default class App extends React.Component {
                 </TouchableHaptic>
               </Pane>
               <Pane flex={2} justifyContent="start">
-                <Text style={human.largeTitle}>⏱</Text>
-                <Text
-                  style={{
-                    ...human.title1Object,
-                    ...sanFranciscoWeights.black
-                  }}
-                >
-                  {formatTime(item.wait)}
-                </Text>
+                <Emoji>⏱</Emoji>
+                <Billboard small>{formatTime(item.wait)}</Billboard>
               </Pane>
             </Pane>
           ))}
