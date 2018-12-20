@@ -12,6 +12,9 @@ export const ethToCurrency = (val, currency) => big(val) * big(currency);
 
 export const formatGwei = raw => toGwei(raw).toString();
 
+export const loadConfig = config =>
+  config !== null && config != undefined ? true : false;
+
 export const formatCurrency = (raw, currency) =>
   ethToCurrency(gweiToEth(toGwei(raw)), currency)
     .toFixed(3)
