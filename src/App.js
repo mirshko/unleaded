@@ -235,7 +235,6 @@ export default class App extends React.Component {
                 </TouchableHaptic>
               </Pane>
               <Pane flex={2} justifyContent="start">
-                <Emoji>⏱</Emoji>
                 <Billboard small>{formatTime(item.wait)}</Billboard>
               </Pane>
             </Pane>
