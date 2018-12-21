@@ -1,4 +1,7 @@
 ![unleaded](https://i.imgur.com/qWb9Yxp.png)
+
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+
 > Current prices of gas for transactions on Ethereum
 
 Come and join the [TestFlight Beta](https://testflight.apple.com/join/GSPyx2gW)!
