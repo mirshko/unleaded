@@ -3,20 +3,17 @@ import {
   Text,
   View,
   ActivityIndicator,
-  RefreshControl,
   ActionSheetIOS,
   Linking
 } from "react-native";
 import { human } from "react-native-typography";
 import store from "react-native-simple-store";
 
-import Frame from "./components/Frame";
-import Window from "./components/Window";
+import Container from "./components/Container";
+import RefreshSwiper from "./components/RefreshSwiper";
 import TouchableHaptic from "./components/TouchableHaptic";
-import Settings from "./components/Settings";
 import Pane from "./components/Pane";
 import Billboard from "./components/Billboard";
-import Emoji from "./components/Emoji";
 
 import {
   formatGwei,
@@ -164,13 +161,12 @@ export default class App extends React.Component {
   render() {
     if (this.state.hasErrored || this.state.isLoading) {
       return (
-        <Frame>
+        <Container>
           <Pane>
-            {this.state.hasErrored && <Emoji>⚠️</Emoji>}
+            {this.state.hasErrored && <Text>⚠️</Text>}
             {this.state.isLoading && <ActivityIndicator size="large" />}
           </Pane>
-          <Settings action={() => this.openSettings()} />
-        </Frame>
+        </Container>
       );
     }
 
@@ -188,39 +184,46 @@ export default class App extends React.Component {
     const gasSpeeds = [
       {
         key: "safeLow",
-        name: "Slow",
-        speed: "🚜",
+        speed: "Slow",
         gas: safeLow,
         wait: safeLowWait
       },
       {
         key: "average",
-        name: "Average",
-        speed: "🚗",
+        speed: "Average",
         gas: average,
         wait: avgWait
       },
       {
         key: "fast",
-        name: "Fast",
-        speed: "🏎",
+        speed: "Fast",
         gas: fast,
         wait: fastWait
       }
     ];
 
     return (
-      <Frame>
-        <Window
+      <Container>
+        <Pane
+          flex={0}
+          style={{
+            marginHorizontal: 12
+          }}
+        >
+          <TouchableHaptic onPress={() => this.openSettings()}>
+            <Text style={human.largeTitle}>⛽️</Text>
+          </TouchableHaptic>
+        </Pane>
+        <RefreshSwiper
           refreshFunc={this.handleRefresh}
           refreshingState={this.state.refreshing}
         >
           {gasSpeeds.map(item => (
             <Pane key={item.key}>
               <Pane>
-                <Emoji>{item.speed}</Emoji>
+                <Billboard small>{item.speed}</Billboard>
               </Pane>
-              <Pane flex={2}>
+              <Pane>
                 <TouchableHaptic onPress={() => this.toggleGasFormat()}>
                   <Pane flex={0}>
                     <Billboard>
@@ -237,14 +240,13 @@ export default class App extends React.Component {
                   </Pane>
                 </TouchableHaptic>
               </Pane>
-              <Pane flex={2} justifyContent="start">
+              <Pane justifyContent="start">
                 <Billboard small>{formatTime(item.wait)}</Billboard>
               </Pane>
             </Pane>
           ))}
-        </Window>
-        <Settings action={() => this.openSettings()} />
-      </Frame>
+        </RefreshSwiper>
+      </Container>
     );
   }
 }
