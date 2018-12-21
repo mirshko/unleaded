@@ -4,16 +4,20 @@ import {
   View,
   ActivityIndicator,
   ActionSheetIOS,
-  Linking
+  Linking,
+  Image
 } from "react-native";
-import { human } from "react-native-typography";
+import { human, sanFranciscoWeights } from "react-native-typography";
 import store from "react-native-simple-store";
+import { Ionicons } from "@expo/vector-icons";
 
 import Container from "./components/Container";
 import RefreshSwiper from "./components/RefreshSwiper";
 import TouchableHaptic from "./components/TouchableHaptic";
 import Pane from "./components/Pane";
 import Billboard from "./components/Billboard";
+
+import constants from "./styles/constants";
 
 import {
   formatGwei,
@@ -204,44 +208,72 @@ export default class App extends React.Component {
 
     return (
       <Container>
+        {/* HEADER */}
         <Pane
           flex={0}
+          // alignItems="top"
+          justifyContent="space-between"
+          flexDirection="row"
           style={{
             marginHorizontal: 12
           }}
         >
+          <Pane flex={0} height={40} width={40} />
+          <Pane flex={0} height={constants.headerOffset}>
+            <Image
+              style={{ width: 72, height: 72 }}
+              source={require("./images/mascot.png")}
+            />
+          </Pane>
           <TouchableHaptic onPress={() => this.openSettings()}>
-            <Text style={human.largeTitle}>⛽️</Text>
+            <Pane flex={0} height={40} width={40}>
+              <Ionicons name="ios-more" size={32} />
+            </Pane>
           </TouchableHaptic>
         </Pane>
+
         <RefreshSwiper
           refreshFunc={this.handleRefresh}
           refreshingState={this.state.refreshing}
         >
           {gasSpeeds.map(item => (
             <Pane key={item.key}>
-              <Pane>
-                <Billboard small>{item.speed}</Billboard>
-              </Pane>
-              <Pane>
-                <TouchableHaptic onPress={() => this.toggleGasFormat()}>
-                  <Pane flex={0}>
-                    <Billboard>
-                      {this.state.showGasInCurrency
-                        ? `${currencies[locale].symbol}${formatCurrency(
-                            item.gas,
-                            this.state.ethData[locale]
-                          )}`
-                        : formatGwei(item.gas)}
-                    </Billboard>
-                    {!this.state.showGasInCurrency && (
-                      <Text style={human.title3}>Gwei</Text>
-                    )}
-                  </Pane>
-                </TouchableHaptic>
-              </Pane>
-              <Pane justifyContent="start">
-                <Billboard small>{formatTime(item.wait)}</Billboard>
+              <Pane
+                backgroundColor="transparent"
+                style={{ marginBottom: constants.headerOffset }}
+              >
+                <Pane backgroundColor="transparent">
+                  <Text
+                    style={{
+                      ...human.title1Object,
+                      ...sanFranciscoWeights.light
+                    }}
+                  >
+                    {item.speed}
+                  </Text>
+                </Pane>
+
+                <Pane backgroundColor="transparent">
+                  <TouchableHaptic onPress={() => this.toggleGasFormat()}>
+                    <Pane flex={0}>
+                      <Billboard>
+                        {this.state.showGasInCurrency
+                          ? `${currencies[locale].symbol}${formatCurrency(
+                              item.gas,
+                              this.state.ethData[locale]
+                            )}`
+                          : formatGwei(item.gas)}
+                      </Billboard>
+                      {!this.state.showGasInCurrency && (
+                        <Text style={human.title3}>Gwei</Text>
+                      )}
+                    </Pane>
+                  </TouchableHaptic>
+                </Pane>
+
+                <Pane backgroundColor="transparent">
+                  <Billboard small>{formatTime(item.wait)}</Billboard>
+                </Pane>
               </Pane>
             </Pane>
           ))}

@@ -3,6 +3,8 @@ import { ScrollView, RefreshControl, StyleSheet } from "react-native";
 import PropTypes from "prop-types";
 import Swiper from "react-native-swiper";
 
+import constants from "../../styles/constants";
+
 const styles = StyleSheet.create({
   dot: {
     height: 7,
@@ -11,7 +13,7 @@ const styles = StyleSheet.create({
     marginLeft: 9 / 2,
     borderRadius: 7 / 2
   }
-})
+});
 
 const RefreshSwiper = ({ children, refreshFunc, refreshingState }) => (
   <ScrollView
@@ -25,6 +27,11 @@ const RefreshSwiper = ({ children, refreshFunc, refreshingState }) => (
       index={1}
       loop={false}
       bounces={true}
+      paginationStyle={{
+        backgroundColor: "transparent",
+        bottom: 0,
+        height: constants.headerOffset
+      }}
       dotColor="rgba(0, 0, 0, 0.3)"
       dotStyle={styles.dot}
       activeDotColor="black"
