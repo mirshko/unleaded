@@ -211,7 +211,6 @@ export default class App extends React.Component {
         {/* HEADER */}
         <Pane
           flex={0}
-          // alignItems="top"
           justifyContent="space-between"
           flexDirection="row"
           style={{
