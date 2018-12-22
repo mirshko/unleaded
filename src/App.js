@@ -1,16 +1,15 @@
 import React from "react";
 import {
   Text,
-  View,
   ActivityIndicator,
   ActionSheetIOS,
   Linking,
-  Image
+  Alert
 } from "react-native";
 import { human, sanFranciscoWeights } from "react-native-typography";
 import store from "react-native-simple-store";
-import { Ionicons } from "@expo/vector-icons";
 
+import Header from "./components/Header";
 import Container from "./components/Container";
 import RefreshSwiper from "./components/RefreshSwiper";
 import TouchableHaptic from "./components/TouchableHaptic";
@@ -81,6 +80,7 @@ export default class App extends React.Component {
       })
       .catch(error => {
         this.setState({ hasErrored: true });
+        this.handleError();
       });
   }
 
@@ -94,6 +94,26 @@ export default class App extends React.Component {
         showGasInCurrency: !prevState.showGasInCurrency
       };
     });
+  }
+
+  handleError() {
+    Alert.alert(
+      "Unable To Load Data",
+      "Ethereum and gas data can not be loaded at this time.",
+      [
+        {
+          text: "Reload",
+          onPress: () => {
+            this.setState({ isLoading: true, hasErrored: false });
+
+            this.fetchData().then(() => {
+              this.setState({ isLoading: false });
+            });
+          }
+        }
+      ],
+      { cancelable: false }
+    );
   }
 
   openSettings() {
@@ -154,7 +174,7 @@ export default class App extends React.Component {
     );
   }
 
-  handleRefresh = () => {
+  handleRefresh() {
     this.setState({ refreshing: true });
 
     this.fetchData().then(() => {
@@ -166,8 +186,9 @@ export default class App extends React.Component {
     if (this.state.hasErrored || this.state.isLoading) {
       return (
         <Container>
-          <Pane>
-            {this.state.hasErrored && <Text>⚠️</Text>}
+          <Header action={() => null} />
+
+          <Pane style={{ marginBottom: constants.headerOffset }}>
             {this.state.isLoading && <ActivityIndicator size="large" />}
           </Pane>
         </Container>
@@ -208,40 +229,16 @@ export default class App extends React.Component {
 
     return (
       <Container>
-        {/* HEADER */}
-        <Pane
-          flex={0}
-          justifyContent="space-between"
-          flexDirection="row"
-          style={{
-            marginHorizontal: 12
-          }}
-        >
-          <Pane flex={0} height={40} width={40} />
-          <Pane flex={0} height={constants.headerOffset}>
-            <Image
-              style={{ width: 72, height: 72 }}
-              source={require("./images/mascot.png")}
-            />
-          </Pane>
-          <TouchableHaptic onPress={() => this.openSettings()}>
-            <Pane flex={0} height={40} width={40}>
-              <Ionicons name="ios-more" size={32} />
-            </Pane>
-          </TouchableHaptic>
-        </Pane>
+        <Header action={() => this.openSettings()} />
 
         <RefreshSwiper
-          refreshFunc={this.handleRefresh}
+          refreshFunc={() => this.handleRefresh()}
           refreshingState={this.state.refreshing}
         >
           {gasSpeeds.map(item => (
             <Pane key={item.key}>
-              <Pane
-                backgroundColor="transparent"
-                style={{ marginBottom: constants.headerOffset }}
-              >
-                <Pane backgroundColor="transparent">
+              <Pane style={{ marginBottom: constants.headerOffset }}>
+                <Pane>
                   <Text
                     style={{
                       ...human.title1Object,
@@ -252,7 +249,7 @@ export default class App extends React.Component {
                   </Text>
                 </Pane>
 
-                <Pane backgroundColor="transparent">
+                <Pane>
                   <TouchableHaptic onPress={() => this.toggleGasFormat()}>
                     <Pane flex={0}>
                       <Billboard>
@@ -270,7 +267,7 @@ export default class App extends React.Component {
                   </TouchableHaptic>
                 </Pane>
 
-                <Pane backgroundColor="transparent">
+                <Pane>
                   <Billboard small>{formatTime(item.wait)}</Billboard>
                 </Pane>
               </Pane>

@@ -1,19 +1,39 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { isIphoneX } from "react-native-iphone-x-helper";
+import PropTypes from "prop-types";
+import { Image } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
-const Header = () => (
-  <View style={styles.header}>
-    <Text>⛽️</Text>
-  </View>
+import Pane from "../Pane";
+import TouchableHaptic from "../TouchableHaptic";
+
+import constants from "../../styles/constants";
+
+const Header = ({ action }) => (
+  <Pane
+    flex={0}
+    justifyContent="space-between"
+    flexDirection="row"
+    style={{
+      marginHorizontal: 12
+    }}
+  >
+    <Pane flex={0} height={40} width={40} />
+    <Pane flex={0} height={constants.headerOffset}>
+      <Image
+        style={{ width: 72, height: 72 }}
+        source={require("../../images/mascot.png")}
+      />
+    </Pane>
+    <TouchableHaptic onPress={action}>
+      <Pane flex={0} height={40} width={40}>
+        <Ionicons name="ios-more" size={32} />
+      </Pane>
+    </TouchableHaptic>
+  </Pane>
 );
 
-const styles = StyleSheet.create({
-  header: {
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: !isIphoneX() ? 16 : 0
-  }
-});
+Header.propTypes = {
+  action: PropTypes.func.isRequired
+};
 
 export default Header;
