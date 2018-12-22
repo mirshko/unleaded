@@ -1,22 +1,22 @@
 import React from "react";
 import {
   Text,
-  View,
   ActivityIndicator,
-  RefreshControl,
   ActionSheetIOS,
-  Linking
+  Linking,
+  Alert
 } from "react-native";
-import { human } from "react-native-typography";
+import { human, sanFranciscoWeights } from "react-native-typography";
 import store from "react-native-simple-store";
 
-import Frame from "./components/Frame";
-import Window from "./components/Window";
+import Header from "./components/Header";
+import Container from "./components/Container";
+import RefreshSwiper from "./components/RefreshSwiper";
 import TouchableHaptic from "./components/TouchableHaptic";
-import Settings from "./components/Settings";
 import Pane from "./components/Pane";
 import Billboard from "./components/Billboard";
-import Emoji from "./components/Emoji";
+
+import constants from "./styles/constants";
 
 import {
   formatGwei,
@@ -80,6 +80,7 @@ export default class App extends React.Component {
       })
       .catch(error => {
         this.setState({ hasErrored: true });
+        this.handleError();
       });
   }
 
@@ -93,6 +94,26 @@ export default class App extends React.Component {
         showGasInCurrency: !prevState.showGasInCurrency
       };
     });
+  }
+
+  handleError() {
+    Alert.alert(
+      "Unable To Load Data",
+      "Ethereum and gas data can not be loaded at this time.",
+      [
+        {
+          text: "Reload",
+          onPress: () => {
+            this.setState({ isLoading: true, hasErrored: false });
+
+            this.fetchData().then(() => {
+              this.setState({ isLoading: false });
+            });
+          }
+        }
+      ],
+      { cancelable: false }
+    );
   }
 
   openSettings() {
@@ -153,7 +174,7 @@ export default class App extends React.Component {
     );
   }
 
-  handleRefresh = () => {
+  handleRefresh() {
     this.setState({ refreshing: true });
 
     this.fetchData().then(() => {
@@ -164,13 +185,13 @@ export default class App extends React.Component {
   render() {
     if (this.state.hasErrored || this.state.isLoading) {
       return (
-        <Frame>
-          <Pane>
-            {this.state.hasErrored && <Emoji>⚠️</Emoji>}
+        <Container>
+          <Header action={() => null} />
+
+          <Pane style={{ marginBottom: constants.headerOffset }}>
             {this.state.isLoading && <ActivityIndicator size="large" />}
           </Pane>
-          <Settings action={() => this.openSettings()} />
-        </Frame>
+        </Container>
       );
     }
 
@@ -188,63 +209,72 @@ export default class App extends React.Component {
     const gasSpeeds = [
       {
         key: "safeLow",
-        name: "Slow",
-        speed: "🚜",
+        speed: "Slow",
         gas: safeLow,
         wait: safeLowWait
       },
       {
         key: "average",
-        name: "Average",
-        speed: "🚗",
+        speed: "Average",
         gas: average,
         wait: avgWait
       },
       {
         key: "fast",
-        name: "Fast",
-        speed: "🏎",
+        speed: "Fast",
         gas: fast,
         wait: fastWait
       }
     ];
 
     return (
-      <Frame>
-        <Window
-          refreshFunc={this.handleRefresh}
+      <Container>
+        <Header action={() => this.openSettings()} />
+
+        <RefreshSwiper
+          refreshFunc={() => this.handleRefresh()}
           refreshingState={this.state.refreshing}
         >
           {gasSpeeds.map(item => (
             <Pane key={item.key}>
-              <Pane>
-                <Emoji>{item.speed}</Emoji>
-              </Pane>
-              <Pane flex={2}>
-                <TouchableHaptic onPress={() => this.toggleGasFormat()}>
-                  <Pane flex={0}>
-                    <Billboard>
-                      {this.state.showGasInCurrency
-                        ? `${currencies[locale].symbol}${formatCurrency(
-                            item.gas,
-                            this.state.ethData[locale]
-                          )}`
-                        : formatGwei(item.gas)}
-                    </Billboard>
-                    {!this.state.showGasInCurrency && (
-                      <Text style={human.title3}>Gwei</Text>
-                    )}
-                  </Pane>
-                </TouchableHaptic>
-              </Pane>
-              <Pane flex={2} justifyContent="start">
-                <Billboard small>{formatTime(item.wait)}</Billboard>
+              <Pane style={{ marginBottom: constants.headerOffset }}>
+                <Pane>
+                  <Text
+                    style={{
+                      ...human.title1Object,
+                      ...sanFranciscoWeights.light
+                    }}
+                  >
+                    {item.speed}
+                  </Text>
+                </Pane>
+
+                <Pane>
+                  <TouchableHaptic onPress={() => this.toggleGasFormat()}>
+                    <Pane flex={0}>
+                      <Billboard>
+                        {this.state.showGasInCurrency
+                          ? `${currencies[locale].symbol}${formatCurrency(
+                              item.gas,
+                              this.state.ethData[locale]
+                            )}`
+                          : formatGwei(item.gas)}
+                      </Billboard>
+                      {!this.state.showGasInCurrency && (
+                        <Text style={human.title3}>Gwei</Text>
+                      )}
+                    </Pane>
+                  </TouchableHaptic>
+                </Pane>
+
+                <Pane>
+                  <Billboard small>{formatTime(item.wait)}</Billboard>
+                </Pane>
               </Pane>
             </Pane>
           ))}
-        </Window>
-        <Settings action={() => this.openSettings()} />
-      </Frame>
+        </RefreshSwiper>
+      </Container>
     );
   }
 }
