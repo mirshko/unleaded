@@ -21,8 +21,7 @@ import constants from "./styles/constants";
 import { formatCurrency, formatTime, currencies, loadConfig } from "./helpers";
 
 const gasEndpoint = `https://ethereum-api.xyz/gas-prices`;
-const ethEndpoint = `https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD,EUR,GBP`;
-const API_KEY = `8703745dd362001992299bdd13f73d728341894653cb592d4b070bb793c4600c`;
+const ethEndpoint = `https://ethereum-api.xyz/eth-prices`;
 
 export default class App extends React.Component {
   constructor(props) {
@@ -61,16 +60,10 @@ export default class App extends React.Component {
       .then(json => {
         this.setState({ gasData: json.result });
       })
-      .then(() =>
-        fetch(ethEndpoint, {
-          headers: {
-            Authorization: `Apikey ${API_KEY}`
-          }
-        })
-      )
+      .then(() => fetch(ethEndpoint))
       .then(res => res.json())
       .then(json => {
-        this.setState({ ethData: json });
+        this.setState({ ethData: json.result });
       })
       .catch(error => {
         this.setState({ hasErrored: true });
@@ -193,8 +186,6 @@ export default class App extends React.Component {
 
     const { slow, average, fast } = this.state.gasData;
 
-    const locale = this.state.nativeCurrency;
-
     const gasSpeeds = [
       {
         key: "safeLow",
@@ -243,9 +234,11 @@ export default class App extends React.Component {
                     <Pane flex={0}>
                       <Billboard>
                         {this.state.showGasInCurrency
-                          ? `${currencies[locale].symbol}${formatCurrency(
+                          ? `${
+                              currencies[this.state.nativeCurrency].symbol
+                            }${formatCurrency(
                               item.gas,
-                              this.state.ethData[locale]
+                              this.state.ethData[this.state.nativeCurrency]
                             )}`
                           : `${item.gas}`}
                       </Billboard>
