@@ -18,15 +18,9 @@ import Billboard from "./components/Billboard";
 
 import constants from "./styles/constants";
 
-import {
-  formatGwei,
-  formatCurrency,
-  formatTime,
-  currencies,
-  loadConfig
-} from "./helpers";
+import { formatCurrency, formatTime, currencies, loadConfig } from "./helpers";
 
-const gasEndpoint = `https://ethgasstation.info/json/ethgasAPI.json`;
+const gasEndpoint = `https://ethereum-api.xyz/gas-prices`;
 const ethEndpoint = `https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD,EUR,GBP`;
 const API_KEY = `8703745dd362001992299bdd13f73d728341894653cb592d4b070bb793c4600c`;
 
@@ -65,7 +59,7 @@ export default class App extends React.Component {
     return fetch(gasEndpoint)
       .then(res => res.json())
       .then(json => {
-        this.setState({ gasData: json });
+        this.setState({ gasData: json.result });
       })
       .then(() =>
         fetch(ethEndpoint, {
@@ -150,9 +144,11 @@ export default class App extends React.Component {
   }
 
   changeCurrency() {
+    const currencyOptionArray = ["USD", "GBP", "EUR"];
+
     ActionSheetIOS.showActionSheetWithOptions(
       {
-        options: ["Cancel", "USD", "GBP", "EUR"],
+        options: ["Cancel", ...currencyOptionArray],
         cancelButtonIndex: 0
       },
       buttonIndex => {
@@ -180,7 +176,7 @@ export default class App extends React.Component {
     this.fetchData().then(() => {
       this.setState({ refreshing: false });
     });
-  };
+  }
 
   render() {
     if (this.state.hasErrored || this.state.isLoading) {
@@ -195,14 +191,7 @@ export default class App extends React.Component {
       );
     }
 
-    const {
-      fast,
-      safeLow,
-      average,
-      safeLowWait,
-      avgWait,
-      fastWait
-    } = this.state.gasData;
+    const { slow, average, fast } = this.state.gasData;
 
     const locale = this.state.nativeCurrency;
 
@@ -210,20 +199,20 @@ export default class App extends React.Component {
       {
         key: "safeLow",
         speed: "Slow",
-        gas: safeLow,
-        wait: safeLowWait
+        gas: slow.price,
+        wait: slow.time
       },
       {
         key: "average",
         speed: "Average",
-        gas: average,
-        wait: avgWait
+        gas: average.price,
+        wait: average.time
       },
       {
         key: "fast",
         speed: "Fast",
-        gas: fast,
-        wait: fastWait
+        gas: fast.price,
+        wait: fast.time
       }
     ];
 
@@ -258,7 +247,7 @@ export default class App extends React.Component {
                               item.gas,
                               this.state.ethData[locale]
                             )}`
-                          : formatGwei(item.gas)}
+                          : `${item.gas}`}
                       </Billboard>
                       {!this.state.showGasInCurrency && (
                         <Text style={human.title3}>Gwei</Text>
