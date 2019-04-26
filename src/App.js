@@ -4,7 +4,8 @@ import {
   ActivityIndicator,
   ActionSheetIOS,
   Linking,
-  Alert
+  Alert,
+  View
 } from "react-native";
 import { human, sanFranciscoWeights } from "react-native-typography";
 import store from "react-native-simple-store";
@@ -14,14 +15,20 @@ import Container from "./components/Container";
 import RefreshSwiper from "./components/RefreshSwiper";
 import TouchableHaptic from "./components/TouchableHaptic";
 import Pane from "./components/Pane";
-import Billboard from "./components/Billboard";
+import Divider from "./components/Divider";
+import Pill from "./components/Pill";
 
 import constants from "./styles/constants";
 
 import { formatCurrency, formatTime, currencies, loadConfig } from "./helpers";
+import Caps from "./components/Caps";
 
 const gasEndpoint = `https://ethereum-api.xyz/gas-prices`;
 const ethEndpoint = `https://ethereum-api.xyz/eth-prices?fiat=USD,EUR,GBP,CAD,CNY`;
+
+const Gutter = props => (
+  <View {...props} style={{ marginLeft: 36, marginRight: 36 }} />
+);
 
 export default class App extends React.Component {
   constructor(props) {
@@ -201,50 +208,113 @@ export default class App extends React.Component {
       <Container>
         <Header action={() => this.openSettings()} />
 
+        <Text
+          style={{
+            ...human.largeTitleObject,
+            ...sanFranciscoWeights.black,
+            textAlign: "center",
+            marginTop: 24
+          }}
+        >{`${currencies[this.state.nativeCurrency].symbol}${
+          this.state.ethData[this.state.nativeCurrency]
+        }`}</Text>
+
+        <Divider marginTop={24} />
+
         <RefreshSwiper
           refreshFunc={() => this.handleRefresh()}
           refreshingState={this.state.refreshing}
         >
-          {gasSpeeds.map(item => (
-            <Pane key={item.key}>
-              <Pane style={{ marginBottom: constants.headerOffset }}>
-                <Pane>
-                  <Text
-                    style={{
-                      ...human.title1Object,
-                      ...sanFranciscoWeights.light
-                    }}
-                  >
-                    {item.speed}
-                  </Text>
-                </Pane>
-
-                <Pane>
-                  <TouchableHaptic onPress={() => this.toggleGasFormat()}>
-                    <Pane flex={0}>
-                      <Billboard>
-                        {this.state.showGasInCurrency
-                          ? `${
-                              currencies[this.state.nativeCurrency].symbol
-                            }${formatCurrency(
-                              item.gas,
-                              this.state.ethData[this.state.nativeCurrency]
-                            )}`
-                          : `${item.gas}`}
-                      </Billboard>
-                      {!this.state.showGasInCurrency && (
-                        <Text style={human.title3}>Gwei</Text>
-                      )}
-                    </Pane>
-                  </TouchableHaptic>
-                </Pane>
-
-                <Pane>
-                  <Billboard small>{formatTime(item.wait)}</Billboard>
-                </Pane>
-              </Pane>
+          <Gutter>
+            <Pane
+              flex={0}
+              alignItems="unset"
+              justifyContent="unset"
+              style={{ marginBottom: 24, marginTop: 24 }}
+            >
+              <Text
+                style={{
+                  ...human.title3Object,
+                  ...sanFranciscoWeights.bold,
+                  marginBottom: 8
+                }}
+              >
+                Gas Speeds
+              </Text>
+              <Caps>By Cost</Caps>
             </Pane>
-          ))}
+          </Gutter>
+
+          <Gutter>
+            {gasSpeeds.reverse().map((item, index) => (
+              <React.Fragment key={item.key}>
+                <Pane
+                  flex={1}
+                  flexDirection="row"
+                  justifyContent="space-between"
+                  style={{ marginBottom: index !== gasSpeeds.length - 1 && 16 }}
+                >
+                  <Pane flex={0} alignItems="flex-start" height={32}>
+                    <Text style={human.title2}>{item.speed}</Text>
+                  </Pane>
+
+                  <Pane flex={0}>
+                    <TouchableHaptic onPress={() => this.toggleGasFormat()}>
+                      <Pane flex={0} flexDirection="row">
+                        <Pill>{formatTime(item.wait)}</Pill>
+
+                        <Pill>
+                          {this.state.showGasInCurrency
+                            ? `${
+                                currencies[this.state.nativeCurrency].symbol
+                              }${formatCurrency(
+                                item.gas,
+                                this.state.ethData[this.state.nativeCurrency]
+                              )}`
+                            : `${item.gas} ${!this.state.showGasInCurrency &&
+                                "Gwei"}`}
+                        </Pill>
+                      </Pane>
+                    </TouchableHaptic>
+                  </Pane>
+                </Pane>
+                {index !== gasSpeeds.length - 1 && (
+                  <Divider
+                    style={{
+                      width: "64%",
+                      marginLeft: "auto",
+                      marginRight: "auto"
+                    }}
+                    marginBottom={16}
+                  />
+                )}
+              </React.Fragment>
+            ))}
+          </Gutter>
+
+          <Divider marginBottom={24} marginTop={24} />
+
+          {/* <Gutter>
+            <Pane
+              flex={0}
+              alignItems="unset"
+              justifyContent="unset"
+              style={{ marginBottom: 24 }}
+            >
+              <Text
+                style={{
+                  ...human.title3Object,
+                  ...sanFranciscoWeights.bold,
+                  marginBottom: 8
+                }}
+              >
+                Gas Guzzlers
+              </Text>
+              <Caps>
+                By Percent
+              </Caps>
+            </Pane>
+          </Gutter> */}
         </RefreshSwiper>
       </Container>
     );
