@@ -21,7 +21,7 @@ import constants from "./styles/constants";
 import { formatCurrency, formatTime, currencies, loadConfig } from "./helpers";
 
 const gasEndpoint = `https://ethereum-api.xyz/gas-prices`;
-const ethEndpoint = `https://ethereum-api.xyz/eth-prices`;
+const ethEndpoint = `https://ethereum-api.xyz/eth-prices?fiat=USD,EUR,GBP,CAD,CNY`;
 
 export default class App extends React.Component {
   constructor(props) {
@@ -137,7 +137,7 @@ export default class App extends React.Component {
   }
 
   changeCurrency() {
-    const currencyOptionArray = ["USD", "GBP", "EUR"];
+    const currencyOptionArray = ["USD", "GBP", "EUR", "CAD", "CNY"];
 
     ActionSheetIOS.showActionSheetWithOptions(
       {
@@ -145,20 +145,10 @@ export default class App extends React.Component {
         cancelButtonIndex: 0
       },
       buttonIndex => {
-        switch (buttonIndex) {
-          case 1:
-            this.setState({ nativeCurrency: "USD" });
-            store.update("config", { nativeCurrency: "USD" });
-            break;
-          case 2:
-            this.setState({ nativeCurrency: "GBP" });
-            store.update("config", { nativeCurrency: "GBP" });
-            break;
-          case 3:
-            this.setState({ nativeCurrency: "EUR" });
-            store.update("config", { nativeCurrency: "EUR" });
-            break;
-        }
+        const selectedCurrency = currencyOptionArray[buttonIndex - 1];
+
+        this.setState({ nativeCurrency: selectedCurrency });
+        store.update("config", { nativeCurrency: selectedCurrency });
       }
     );
   }

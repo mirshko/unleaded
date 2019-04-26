@@ -20,4 +20,4 @@ Thanks to [@mikedemarais](https://twitter.com/mikedemarais) for the idea!
 
 Extra special thanks to [Shane :zap: Vitarana](https://twitter.com/shanev) and [@mikedemarais](https://twitter.com/mikedemarais) again for donating to cover the cost of the Apple Developer account. 
 
-Data is pulled from [cryptocompare.com](https://www.cryptocompare.com/) and [ethgasstation.info](https://ethgasstation.info/).
+Data is pulled from [ethereum-api](https://github.com/pedrouid/ethereum-api), many thanks to [@pedrouid](https://twitter.com/pedrouid)!.
