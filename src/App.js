@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { human, sanFranciscoWeights } from "react-native-typography";
 import store from "react-native-simple-store";
+import truncateMiddle from "truncate-middle";
 
 import Header from "./components/Header";
 import Container from "./components/Container";
@@ -17,18 +18,18 @@ import TouchableHaptic from "./components/TouchableHaptic";
 import Pane from "./components/Pane";
 import Divider from "./components/Divider";
 import Pill from "./components/Pill";
+import Caps from "./components/Caps";
+import Title from "./components/Title";
+import Gutter from "./components/Gutter";
 
 import constants from "./styles/constants";
 
 import { formatCurrency, formatTime, currencies, loadConfig } from "./helpers";
-import Caps from "./components/Caps";
+import AddressIcon from "./components/AddressIcon";
 
 const gasEndpoint = `https://ethereum-api.xyz/gas-prices`;
-const ethEndpoint = `https://ethereum-api.xyz/eth-prices?fiat=USD,EUR,GBP,CAD,CNY`;
-
-const Gutter = props => (
-  <View {...props} style={{ marginLeft: 36, marginRight: 36 }} />
-);
+const ethEndpoint = `https://ethereum-api.xyz/eth-prices`;
+const guzzlersEndpoint = `https://ethgasstation.info/json/gasguzz.json`;
 
 export default class App extends React.Component {
   constructor(props) {
@@ -37,6 +38,7 @@ export default class App extends React.Component {
       isLoading: true,
       hasErrored: false,
       showGasInCurrency: false,
+      showEthCurrencyValue: true,
       nativeCurrency: "USD",
       refreshing: false
     };
@@ -45,7 +47,7 @@ export default class App extends React.Component {
   componentDidMount() {
     this.setState({ isLoading: true });
 
-    this.fetchData().then(() => {
+    this._fetchData().then(() => {
       this.setState({ isLoading: false });
     });
 
@@ -61,20 +63,25 @@ export default class App extends React.Component {
     });
   }
 
-  fetchData() {
+  _fetchData() {
     return fetch(gasEndpoint)
       .then(res => res.json())
       .then(json => {
         this.setState({ gasData: json.result });
       })
-      .then(() => fetch(ethEndpoint))
+      .then(() => fetch(`${ethEndpoint}?fiat=${this.state.nativeCurrency}`))
       .then(res => res.json())
       .then(json => {
         this.setState({ ethData: json.result });
       })
+      .then(() => fetch(guzzlersEndpoint))
+      .then(res => res.json())
+      .then(json => {
+        this.setState({ guzzlerData: json });
+      })
       .catch(error => {
         this.setState({ hasErrored: true });
-        this.handleError();
+        this._handleError();
       });
   }
 
@@ -90,7 +97,7 @@ export default class App extends React.Component {
     });
   }
 
-  handleError() {
+  _handleError() {
     Alert.alert(
       "Unable To Load Data",
       "Ethereum and gas data can not be loaded at this time.",
@@ -100,7 +107,7 @@ export default class App extends React.Component {
           onPress: () => {
             this.setState({ isLoading: true, hasErrored: false });
 
-            this.fetchData().then(() => {
+            this._fetchData().then(() => {
               this.setState({ isLoading: false });
             });
           }
@@ -110,7 +117,7 @@ export default class App extends React.Component {
     );
   }
 
-  openSettings() {
+  _openSettings() {
     ActionSheetIOS.showActionSheetWithOptions(
       {
         options: [
@@ -133,7 +140,7 @@ export default class App extends React.Component {
             );
             break;
           case 2:
-            this.changeCurrency();
+            this._changeCurrency();
             break;
           case 3:
             this.toggleGasFormat();
@@ -143,7 +150,26 @@ export default class App extends React.Component {
     );
   }
 
-  changeCurrency() {
+  _viewAddress(address) {
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: ["Cancel", "View on EthStats", "View on Etherscan"],
+        cancelButtonIndex: 0
+      },
+      buttonIndex => {
+        switch (buttonIndex) {
+          case 1:
+            Linking.openURL(`https://ethstats.io/account/${address}`);
+            break;
+          case 2:
+            Linking.openURL(`https://etherscan.io/address/${address}`);
+            break;
+        }
+      }
+    );
+  }
+
+  _changeCurrency() {
     const currencyOptionArray = ["USD", "GBP", "EUR", "CAD", "CNY"];
 
     ActionSheetIOS.showActionSheetWithOptions(
@@ -152,18 +178,31 @@ export default class App extends React.Component {
         cancelButtonIndex: 0
       },
       buttonIndex => {
-        const selectedCurrency = currencyOptionArray[buttonIndex - 1];
+        if (buttonIndex > 0) {
+          const selectedCurrency = currencyOptionArray[buttonIndex - 1];
 
-        this.setState({ nativeCurrency: selectedCurrency });
-        store.update("config", { nativeCurrency: selectedCurrency });
+          this.setState({ nativeCurrency: selectedCurrency });
+
+          store.update("config", { nativeCurrency: selectedCurrency });
+
+          this._handleHardRefresh();
+        }
       }
     );
   }
 
-  handleRefresh() {
+  _handleHardRefresh() {
+    this.setState({ isLoading: true });
+
+    this._fetchData().then(() => {
+      this.setState({ isLoading: false });
+    });
+  }
+
+  _handleRefresh() {
     this.setState({ refreshing: true });
 
-    this.fetchData().then(() => {
+    this._fetchData().then(() => {
       this.setState({ refreshing: false });
     });
   }
@@ -172,7 +211,7 @@ export default class App extends React.Component {
     if (this.state.hasErrored || this.state.isLoading) {
       return (
         <Container>
-          <Header action={() => null} />
+          <Header action={() => this._openSettings()} />
 
           <Pane style={{ marginBottom: constants.headerOffset }}>
             {this.state.isLoading && <ActivityIndicator size="large" />}
@@ -206,23 +245,36 @@ export default class App extends React.Component {
 
     return (
       <Container>
-        <Header action={() => this.openSettings()} />
+        <Header action={() => this._openSettings()} />
 
-        <Text
-          style={{
-            ...human.largeTitleObject,
-            ...sanFranciscoWeights.black,
-            textAlign: "center",
-            marginTop: 24
-          }}
-        >{`${currencies[this.state.nativeCurrency].symbol}${
-          this.state.ethData[this.state.nativeCurrency]
-        }`}</Text>
+        <Pane flex={0}>
+          <TouchableHaptic
+            onPress={() =>
+              this.setState(prevState => ({
+                showEthCurrencyValue: !prevState.showEthCurrencyValue
+              }))
+            }
+          >
+            <Text
+              style={{
+                ...human.largeTitleObject,
+                ...sanFranciscoWeights.black,
+                marginTop: 24
+              }}
+            >
+              {this.state.showEthCurrencyValue
+                ? `${currencies[this.state.nativeCurrency].symbol}${
+                    this.state.ethData[this.state.nativeCurrency]
+                  }`
+                : `1 ETH`}
+            </Text>
+          </TouchableHaptic>
+        </Pane>
 
-        <Divider marginTop={24} />
+        <Divider mt={24} />
 
         <RefreshSwiper
-          refreshFunc={() => this.handleRefresh()}
+          refreshFunc={() => this._handleRefresh()}
           refreshingState={this.state.refreshing}
         >
           <Gutter>
@@ -232,15 +284,7 @@ export default class App extends React.Component {
               justifyContent="unset"
               style={{ marginBottom: 24, marginTop: 24 }}
             >
-              <Text
-                style={{
-                  ...human.title3Object,
-                  ...sanFranciscoWeights.bold,
-                  marginBottom: 8
-                }}
-              >
-                Gas Speeds
-              </Text>
+              <Title>Gas Speeds</Title>
               <Caps>By Cost</Caps>
             </Pane>
           </Gutter>
@@ -261,7 +305,9 @@ export default class App extends React.Component {
                   <Pane flex={0}>
                     <TouchableHaptic onPress={() => this.toggleGasFormat()}>
                       <Pane flex={0} flexDirection="row">
-                        <Pill>{formatTime(item.wait)}</Pill>
+                        <Pill style={{ marginRight: 8 }}>
+                          {formatTime(item.wait)}
+                        </Pill>
 
                         <Pill>
                           {this.state.showGasInCurrency
@@ -271,50 +317,49 @@ export default class App extends React.Component {
                                 item.gas,
                                 this.state.ethData[this.state.nativeCurrency]
                               )}`
-                            : `${item.gas} ${!this.state.showGasInCurrency &&
-                                "Gwei"}`}
+                            : `${item.gas} Gwei`}
                         </Pill>
                       </Pane>
                     </TouchableHaptic>
                   </Pane>
                 </Pane>
-                {index !== gasSpeeds.length - 1 && (
-                  <Divider
-                    style={{
-                      width: "64%",
-                      marginLeft: "auto",
-                      marginRight: "auto"
-                    }}
-                    marginBottom={16}
-                  />
-                )}
+                {index !== gasSpeeds.length - 1 && <Divider mb={16} />}
               </React.Fragment>
             ))}
           </Gutter>
 
-          <Divider marginBottom={24} marginTop={24} />
+          <Divider mb={24} mt={24} />
 
-          {/* <Gutter>
-            <Pane
-              flex={0}
-              alignItems="unset"
-              justifyContent="unset"
-              style={{ marginBottom: 24 }}
-            >
-              <Text
-                style={{
-                  ...human.title3Object,
-                  ...sanFranciscoWeights.bold,
-                  marginBottom: 8
-                }}
+          <Gutter>
+            <View style={{ marginBottom: 24 }}>
+              <Title>Gas Guzzlers</Title>
+              <Caps>By Percent</Caps>
+            </View>
+          </Gutter>
+
+          <Gutter>
+            {this.state.guzzlerData.slice(0, 10).map((guzzler, index) => (
+              <Pane
+                key={index}
+                flexDirection="row"
+                justifyContent="space-between"
+                height={32}
+                style={{ marginBottom: 16 }}
               >
-                Gas Guzzlers
-              </Text>
-              <Caps>
-                By Percent
-              </Caps>
-            </Pane>
-          </Gutter> */}
+                <TouchableHaptic
+                  onPress={() => this._viewAddress(guzzler.to_address)}
+                >
+                  <Pane flexDirection="row" flex={0}>
+                    <AddressIcon address={guzzler.to_address} />
+                    <Text style={human.body}>
+                      {truncateMiddle(guzzler.to_address, 9, 7, "…")}
+                    </Text>
+                  </Pane>
+                </TouchableHaptic>
+                <Pill small>{guzzler.pcttot.toFixed(2)}</Pill>
+              </Pane>
+            ))}
+          </Gutter>
         </RefreshSwiper>
       </Container>
     );

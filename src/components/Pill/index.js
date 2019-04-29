@@ -1,27 +1,34 @@
 import React from "react";
 import { Text } from "react-native";
-import { iOSColors } from "react-native-typography";
+import { iOSColors, human, sanFranciscoWeights } from "react-native-typography";
 
 import Pane from "../Pane";
 
-const Pill = ({ children }) => (
+const Pill = ({ small, style, children }) => (
   <Pane
     backgroundColor={iOSColors.customGray}
     flex={0}
     style={{
-      paddingLeft: 10,
-      paddingRight: 10,
-      paddingTop: 4,
-      paddingBottom: 4,
-      marginRight: 8,
-      borderRadius: "100%"
+      paddingLeft: small ? 8 : 10,
+      paddingRight: small ? 8 : 10,
+      paddingTop: small ? 2 : 4,
+      paddingBottom: small ? 2 : 4,
+      borderRadius: "100%",
+      ...style
     }}
   >
     <Text
-      style={{
-        ...human.bodyObject,
-        ...sanFranciscoWeights.semibold
-      }}
+      style={
+        small
+          ? {
+              ...human.calloutObject,
+              ...sanFranciscoWeights.medium
+            }
+          : {
+              ...human.bodyObject,
+              ...sanFranciscoWeights.semibold
+            }
+      }
     >
       {children}
     </Text>
