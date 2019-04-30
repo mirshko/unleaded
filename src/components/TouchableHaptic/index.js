@@ -5,8 +5,8 @@ import { Haptic } from "expo";
 
 const TouchableHaptic = ({ children, onPress, impact }) => (
   <TouchableOpacity
-    onPressOut={onPress}
-    onPress={() => Haptic.impact(Haptic.ImpactFeedbackStyle[impact])}
+    onPressOut={() => Haptic.impact(Haptic.ImpactFeedbackStyle[impact])}
+    onPress={onPress}
   >
     {children}
   </TouchableOpacity>
