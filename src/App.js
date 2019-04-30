@@ -29,7 +29,7 @@ import AddressIcon from "./components/AddressIcon";
 
 const gasEndpoint = `https://ethereum-api.xyz/gas-prices`;
 const ethEndpoint = `https://ethereum-api.xyz/eth-prices`;
-const guzzlersEndpoint = `https://ethgasstation.info/json/gasguzz.json`;
+const guzzlersEndpoint = `https://ethereum-api.xyz/gas-guzzlers`;
 
 export default class App extends React.Component {
   constructor(props) {
@@ -77,7 +77,7 @@ export default class App extends React.Component {
       .then(() => fetch(guzzlersEndpoint))
       .then(res => res.json())
       .then(json => {
-        this.setState({ guzzlerData: json });
+        this.setState({ guzzlerData: json.result });
       })
       .catch(error => {
         this.setState({ hasErrored: true });
@@ -85,7 +85,7 @@ export default class App extends React.Component {
       });
   }
 
-  toggleGasFormat() {
+  _toggleGasFormat() {
     this.setState(prevState => {
       store.update("config", {
         showGasInCurrency: !prevState.showGasInCurrency
@@ -143,7 +143,7 @@ export default class App extends React.Component {
             this._changeCurrency();
             break;
           case 3:
-            this.toggleGasFormat();
+            this._toggleGasFormat();
             break;
         }
       }
@@ -303,7 +303,7 @@ export default class App extends React.Component {
                   </Pane>
 
                   <Pane flex={0}>
-                    <TouchableHaptic onPress={() => this.toggleGasFormat()}>
+                    <TouchableHaptic onPress={() => this._toggleGasFormat()}>
                       <Pane flex={0} flexDirection="row">
                         <Pill style={{ marginRight: 8 }}>
                           {formatTime(item.wait)}
@@ -347,16 +347,16 @@ export default class App extends React.Component {
                 style={{ marginBottom: 16 }}
               >
                 <TouchableHaptic
-                  onPress={() => this._viewAddress(guzzler.to_address)}
+                  onPress={() => this._viewAddress(guzzler.address)}
                 >
                   <Pane flexDirection="row" flex={0}>
-                    <AddressIcon address={guzzler.to_address} />
+                    <AddressIcon address={guzzler.address} />
                     <Text style={human.body}>
-                      {truncateMiddle(guzzler.to_address, 9, 7, "…")}
+                      {truncateMiddle(guzzler.address, 10, 4, "…")}
                     </Text>
                   </Pane>
                 </TouchableHaptic>
-                <Pill small>{guzzler.pcttot.toFixed(2)}</Pill>
+                <Pill small>{guzzler.pct}%</Pill>
               </Pane>
             ))}
           </Gutter>
