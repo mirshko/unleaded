@@ -2,15 +2,29 @@
 
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
-> Current prices of gas for transactions on Ethereum
+> The best way to see the current price of gas on Ethereum.
 
-Come and join the [TestFlight Beta](https://testflight.apple.com/join/GSPyx2gW)!
+Download the app live [on the App Store](https://itunes.apple.com/us/app/unleaded/id1446763654)!
 
-Accepting donations at `0xf6fDeE29e3A14610fdbE187e2d3442543cfA45B8` or through [☕️ Buy me a coffee](https://www.buymeacoffee.com/jeff) 🙌
+Become an Attendant and [beta test the app](https://testflight.apple.com/join/GSPyx2gW)!
+
+Accepting donations at `0xf6fDeE29e3A14610fdbE187e2d3442543cfA45B8` or through [Buy me a coffee](https://www.buymeacoffee.com/jeff) 🙌
 
 ## About
 
-Small React Native app built to enable someone to quickly get a look at the current price of Gas for transactions on Ethereum. Join the [TestFlight](https://testflight.apple.com/join/GSPyx2gW) to get the latest on the app before it's released onto the App Store to the public! 
+The only mobile app designed to show you the current prices of gas on Ethereum.
+
+**Know When To Fill Up**
+
+See how much your transaction will cost on the Ethereum network and how long it will take to complete in three speeds of gas (Slow, Average, and Fast).
+
+**Save At The Pump**
+
+Quickly see the current price of Ethereum right at the top of the app. Easily change to your fiat currency of choice (currently USD, EUR, GBP, CAD, CNY).
+
+**Running On Empty?**
+
+Who's hogging the gas on the Ethereum network? See the top 10 consumers of gas across the whole network rated by percentage.
 
 ### Thanks
 
