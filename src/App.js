@@ -264,7 +264,7 @@ export default class App extends React.Component {
             >
               {this.state.showEthCurrencyValue
                 ? `${currencies[this.state.nativeCurrency].symbol}${
-                    this.state.ethData[this.state.nativeCurrency]
+                    this.state.ethData[this.state.nativeCurrency].toFixed(2)
                   }`
                 : `1 ETH`}
             </Text>
@@ -355,7 +355,7 @@ export default class App extends React.Component {
                       </Text>
                     </Pane>
 
-                    <Pill small>{guzzler.pct}%</Pill>
+                    <Pill small>{guzzler.pct.toFixed(2)}%</Pill>
                   </Pane>
                 </TouchableHaptic>
               </View>
