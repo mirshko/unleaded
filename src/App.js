@@ -3,10 +3,10 @@ import {
   Text,
   ActivityIndicator,
   ActionSheetIOS,
-  Linking,
   Alert,
   View
 } from "react-native";
+import { WebBrowser } from "expo";
 import { human, sanFranciscoWeights } from "react-native-typography";
 import store from "react-native-simple-store";
 import truncateMiddle from "truncate-middle";
@@ -135,7 +135,7 @@ export default class App extends React.Component {
       buttonIndex => {
         switch (buttonIndex) {
           case 1:
-            Linking.openURL(
+            WebBrowser.openBrowserAsync(
               `https://github.com/mirshko/unleaded/blob/master/README.md`
             );
             break;
@@ -159,10 +159,14 @@ export default class App extends React.Component {
       buttonIndex => {
         switch (buttonIndex) {
           case 1:
-            Linking.openURL(`https://ethstats.io/account/${address}`);
+            WebBrowser.openBrowserAsync(
+              `https://ethstats.io/account/${address}`
+            );
             break;
           case 2:
-            Linking.openURL(`https://etherscan.io/address/${address}`);
+            WebBrowser.openBrowserAsync(
+              `https://etherscan.io/address/${address}`
+            );
             break;
         }
       }
@@ -263,9 +267,9 @@ export default class App extends React.Component {
               }}
             >
               {this.state.showEthCurrencyValue
-                ? `${currencies[this.state.nativeCurrency].symbol}${
-                    this.state.ethData[this.state.nativeCurrency].toFixed(2)
-                  }`
+                ? `${
+                    currencies[this.state.nativeCurrency].symbol
+                  }${this.state.ethData[this.state.nativeCurrency].toFixed(2)}`
                 : `1 ETH`}
             </Text>
           </TouchableHaptic>
