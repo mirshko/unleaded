@@ -6,7 +6,7 @@
     "privacy": "public",
     "sdkVersion": "32.0.0",
     "platforms": ["ios"],
-    "version": "2.0.0",
+    "version": "2.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "githubUrl": "https://github.com/mirshko/unleaded",
@@ -20,7 +20,7 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "buildNumber": "4",
+      "buildNumber": "1",
       "supportsTablet": false,
       "bundleIdentifier": "com.reiner.unleaded"
     }
