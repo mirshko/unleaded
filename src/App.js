@@ -339,25 +339,26 @@ export default class App extends React.Component {
 
           <Gutter>
             {this.state.guzzlerData.slice(0, 10).map((guzzler, index) => (
-              <Pane
-                key={index}
-                flexDirection="row"
-                justifyContent="space-between"
-                height={32}
-                style={{ marginBottom: 16 }}
-              >
+              <View key={index} style={{ marginBottom: 16 }}>
                 <TouchableHaptic
                   onPress={() => this._viewAddress(guzzler.address)}
                 >
-                  <Pane flexDirection="row" flex={0}>
-                    <AddressIcon address={guzzler.address} />
-                    <Text style={human.body}>
-                      {truncateMiddle(guzzler.address, 10, 4, "…")}
-                    </Text>
+                  <Pane
+                    flexDirection="row"
+                    justifyContent="space-between"
+                    height={32}
+                  >
+                    <Pane flexDirection="row" flex={0}>
+                      <AddressIcon address={guzzler.address} />
+                      <Text style={human.body}>
+                        {truncateMiddle(guzzler.address, 10, 4, "…")}
+                      </Text>
+                    </Pane>
+
+                    <Pill small>{guzzler.pct}%</Pill>
                   </Pane>
                 </TouchableHaptic>
-                <Pill small>{guzzler.pct}%</Pill>
-              </Pane>
+              </View>
             ))}
           </Gutter>
         </RefreshSwiper>
