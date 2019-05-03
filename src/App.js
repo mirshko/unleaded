@@ -24,7 +24,13 @@ import Gutter from "./components/Gutter";
 
 import constants from "./styles/constants";
 
-import { formatCurrency, formatTime, currencies, loadConfig } from "./helpers";
+import {
+  big,
+  formatCurrency,
+  formatTime,
+  currencies,
+  loadConfig
+} from "./helpers";
 import AddressIcon from "./components/AddressIcon";
 
 const gasEndpoint = `https://ethereum-api.xyz/gas-prices`;
@@ -267,9 +273,9 @@ export default class App extends React.Component {
               }}
             >
               {this.state.showEthCurrencyValue
-                ? `${
-                    currencies[this.state.nativeCurrency].symbol
-                  }${this.state.ethData[this.state.nativeCurrency].toFixed(2)}`
+                ? `${currencies[this.state.nativeCurrency].symbol}${big(
+                    this.state.ethData[this.state.nativeCurrency]
+                  ).toFixed(2)}`
                 : `1 ETH`}
             </Text>
           </TouchableHaptic>
