@@ -141,9 +141,7 @@ export default class App extends React.Component {
       buttonIndex => {
         switch (buttonIndex) {
           case 1:
-            WebBrowser.openBrowserAsync(
-              `https://github.com/mirshko/unleaded/blob/master/README.md`
-            );
+            WebBrowser.openBrowserAsync(`https://unleaded.reiner.design/`);
             break;
           case 2:
             this._changeCurrency();
@@ -159,15 +157,13 @@ export default class App extends React.Component {
   _viewAddress(address) {
     ActionSheetIOS.showActionSheetWithOptions(
       {
-        options: ["Cancel", "View on EthStats", "View on Etherscan"],
+        options: ["Cancel", "View on Alethio", "View on Etherscan"],
         cancelButtonIndex: 0
       },
       buttonIndex => {
         switch (buttonIndex) {
           case 1:
-            WebBrowser.openBrowserAsync(
-              `https://ethstats.io/account/${address}`
-            );
+            WebBrowser.openBrowserAsync(`https://aleth.io/account/${address}`);
             break;
           case 2:
             WebBrowser.openBrowserAsync(
