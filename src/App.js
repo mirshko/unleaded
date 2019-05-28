@@ -4,9 +4,10 @@ import {
   ActivityIndicator,
   ActionSheetIOS,
   Alert,
-  View
+  View,
+  Clipboard
 } from "react-native";
-import { WebBrowser } from "expo";
+import { WebBrowser, MailComposer } from "expo";
 import { human, sanFranciscoWeights } from "react-native-typography";
 import store from "react-native-simple-store";
 import truncateMiddle from "truncate-middle";
@@ -36,6 +37,15 @@ import AddressIcon from "./components/AddressIcon";
 const gasEndpoint = `https://ethereum-api.xyz/gas-prices`;
 const ethEndpoint = `https://ethereum-api.xyz/eth-prices`;
 const guzzlersEndpoint = `https://ethereum-api.xyz/gas-guzzlers`;
+
+const feedbackTemplate = `
+
+---
+Build: ${constants.buildNumber}
+App Version: ${constants.version}
+iOS Version: ${constants.systemVersion}
+Device: ${constants.model}
+`;
 
 export default class App extends React.Component {
   constructor(props) {
@@ -103,6 +113,26 @@ export default class App extends React.Component {
     });
   }
 
+  _sendFeedback() {
+    MailComposer.composeAsync({
+      recipients: ["unleaded@reiner.design"],
+      subject: "Unleaded Feedback",
+      body: feedbackTemplate
+    }).catch(() =>
+      Alert.alert("Unable To Send Feedback", undefined, [
+        {
+          text: "Copy Feedback Email",
+          onPress: () => {
+            Clipboard.setString("unleaded@reiner.design");
+          }
+        },
+        {
+          text: "OK"
+        }
+      ])
+    );
+  }
+
   _handleError() {
     Alert.alert(
       "Unable To Load Data",
@@ -118,8 +148,7 @@ export default class App extends React.Component {
             });
           }
         }
-      ],
-      { cancelable: false }
+      ]
     );
   }
 
@@ -129,6 +158,7 @@ export default class App extends React.Component {
         options: [
           "Cancel",
           "About",
+          "Leave Feedback",
           "Change your currency",
           `${
             this.state.showGasInCurrency
@@ -144,9 +174,12 @@ export default class App extends React.Component {
             WebBrowser.openBrowserAsync(`https://unleaded.reiner.design/`);
             break;
           case 2:
-            this._changeCurrency();
+            this._sendFeedback();
             break;
           case 3:
+            this._changeCurrency();
+            break;
+          case 4:
             this._toggleGasFormat();
             break;
         }
