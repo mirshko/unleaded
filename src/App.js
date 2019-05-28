@@ -121,7 +121,7 @@ export default class App extends React.Component {
     }).catch(() =>
       Alert.alert("Unable To Send Feedback", undefined, [
         {
-          text: "Copy Feedback Email",
+          text: "Copy feedback email",
           onPress: () => {
             Clipboard.setString("unleaded@reiner.design");
           }
@@ -158,7 +158,7 @@ export default class App extends React.Component {
         options: [
           "Cancel",
           "About",
-          "Leave Feedback",
+          "Leave feedback",
           "Change your currency",
           `${
             this.state.showGasInCurrency
