@@ -141,9 +141,7 @@ export default class App extends React.Component {
       buttonIndex => {
         switch (buttonIndex) {
           case 1:
-            WebBrowser.openBrowserAsync(
-              `https://github.com/mirshko/unleaded/blob/master/README.md`
-            );
+            WebBrowser.openBrowserAsync(`https://unleaded.reiner.design/`);
             break;
           case 2:
             this._changeCurrency();
