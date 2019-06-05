@@ -5,7 +5,8 @@ import {
   ActionSheetIOS,
   Alert,
   View,
-  Clipboard
+  Clipboard,
+  NetInfo
 } from "react-native";
 import { WebBrowser, MailComposer } from "expo";
 import { human, sanFranciscoWeights } from "react-native-typography";
@@ -22,6 +23,7 @@ import Pill from "./components/Pill";
 import Caps from "./components/Caps";
 import Title from "./components/Title";
 import Gutter from "./components/Gutter";
+import AddressIcon from "./components/AddressIcon";
 
 import constants from "./styles/constants";
 
@@ -32,7 +34,6 @@ import {
   currencies,
   loadConfig
 } from "./helpers";
-import AddressIcon from "./components/AddressIcon";
 
 const gasEndpoint = `https://ethereum-api.xyz/gas-prices`;
 const ethEndpoint = `https://ethereum-api.xyz/eth-prices`;
@@ -52,6 +53,7 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       isLoading: true,
+      isConnected: true,
       hasErrored: false,
       showGasInCurrency: false,
       showEthCurrencyValue: true,
@@ -61,11 +63,12 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({ isLoading: true });
+    NetInfo.isConnected.addEventListener(
+      "connectionChange",
+      this._handleConnectivityChange
+    );
 
-    this._fetchData().then(() => {
-      this.setState({ isLoading: false });
-    });
+    this._restoreLastRefreshFromCache();
 
     store.get("config").then(config => {
       if (loadConfig(config))
@@ -79,26 +82,65 @@ export default class App extends React.Component {
     });
   }
 
+  componentWillUnmount() {
+    NetInfo.isConnected.removeEventListener(
+      "connectionChange",
+      this._handleConnectivityChange
+    );
+  }
+
+  _restoreLastRefreshFromCache() {
+    store.get("cache").then(cache => {
+      if (loadConfig(cache)) {
+        this.setState(
+          prevState => ({
+            gasData: cache.gasData || prevState.gasData,
+            ethData: cache.ethData || prevState.ethData,
+            guzzlerData: cache.guzzlerData || prevState.guzzlerData
+          }),
+          () => this.setState({ isLoading: false })
+        );
+      } else {
+        this._fetchData().then(() => {
+          this.setState({ isLoading: false });
+        });
+      }
+    });
+  }
+
+  _handleConnectivityChange = isConnected => this.setState({ isConnected });
+
   _fetchData() {
-    return fetch(gasEndpoint)
-      .then(res => res.json())
-      .then(json => {
-        this.setState({ gasData: json.result });
-      })
-      .then(() => fetch(`${ethEndpoint}?fiat=${this.state.nativeCurrency}`))
-      .then(res => res.json())
-      .then(json => {
-        this.setState({ ethData: json.result });
-      })
-      .then(() => fetch(guzzlersEndpoint))
-      .then(res => res.json())
-      .then(json => {
-        this.setState({ guzzlerData: json.result });
-      })
-      .catch(error => {
-        this.setState({ hasErrored: true });
-        this._handleError();
-      });
+    if (this.state.isConnected) {
+      return fetch(gasEndpoint)
+        .then(res => res.json())
+        .then(json => {
+          this.setState({ gasData: json.result });
+        })
+        .then(() => fetch(`${ethEndpoint}?fiat=${this.state.nativeCurrency}`))
+        .then(res => res.json())
+        .then(json => {
+          this.setState({ ethData: json.result });
+        })
+        .then(() => fetch(guzzlersEndpoint))
+        .then(res => res.json())
+        .then(json => {
+          this.setState({ guzzlerData: json.result });
+        })
+        .then(() =>
+          store.update("cache", {
+            gasData: this.state.gasData,
+            ethData: this.state.ethData,
+            guzzlerData: this.state.guzzlerData.slice(0, 10)
+          })
+        )
+        .catch(error => {
+          this.setState({ hasErrored: true });
+          this._handleError();
+        });
+    }
+
+    return Promise.resolve();
   }
 
   _toggleGasFormat() {
