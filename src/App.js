@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Text,
   ActivityIndicator,
@@ -8,7 +8,8 @@ import {
   Clipboard,
   NetInfo
 } from "react-native";
-import { WebBrowser, MailComposer } from "expo";
+import * as WebBrowser from "expo-web-browser";
+import * as MailComposer from "expo-mail-composer";
 import { human, sanFranciscoWeights } from "react-native-typography";
 import store from "react-native-simple-store";
 import truncateMiddle from "truncate-middle";
@@ -38,6 +39,95 @@ import {
 const gasEndpoint = `https://ethereum-api.xyz/gas-prices`;
 const ethEndpoint = `https://ethereum-api.xyz/eth-prices`;
 const guzzlersEndpoint = `https://ethereum-api.xyz/gas-guzzlers`;
+
+const EthereumPrice = ({ nativeCurrency, ethData }) => {
+  const [toggle, setToggle] = useState(true);
+
+  return (
+    <TouchableHaptic onPress={() => setToggle(!toggle)}>
+      <Text
+        style={{
+          ...human.largeTitleObject,
+          ...sanFranciscoWeights.black,
+          marginTop: 24
+        }}
+      >
+        {toggle
+          ? `${currencies[nativeCurrency].symbol}${big(
+              ethData[nativeCurrency]
+            ).toFixed(2)}`
+          : `1 ETH`}
+      </Text>
+    </TouchableHaptic>
+  );
+};
+
+const Guzzler = ({ address, pct, ...rest }) => {
+  const viewAddress = address => {
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: ["Cancel", "View on Alethio", "View on Etherscan"],
+        cancelButtonIndex: 0
+      },
+      buttonIndex => {
+        switch (buttonIndex) {
+          case 1:
+            WebBrowser.openBrowserAsync(`https://aleth.io/account/${address}`);
+            break;
+          case 2:
+            WebBrowser.openBrowserAsync(
+              `https://etherscan.io/address/${address}`
+            );
+            break;
+        }
+      }
+    );
+  };
+
+  return (
+    <View style={{ marginBottom: 16 }} {...rest}>
+      <TouchableHaptic onPress={() => viewAddress(address)}>
+        <Pane flexDirection="row" justifyContent="space-between" height={32}>
+          <Pane flexDirection="row" flex={0}>
+            <AddressIcon address={address} />
+            <Text style={human.body}>
+              {truncateMiddle(address, 10, 4, "…")}
+            </Text>
+          </Pane>
+
+          <Pill small>{pct.toFixed(2)}%</Pill>
+        </Pane>
+      </TouchableHaptic>
+    </View>
+  );
+};
+
+const GasSpeed = ({ speed, wait, gas, nativeCurrency, ethData, ...rest }) => {
+  const [showGasInCurrency, toggleGasFormat] = useState(true);
+
+  const symbol = currencies[nativeCurrency].symbol;
+  const gasInCurrency = formatCurrency(gas, ethData[nativeCurrency]);
+
+  return (
+    <Pane flex={1} flexDirection="row" justifyContent="space-between" {...rest}>
+      <Pane flex={0} alignItems="flex-start" height={32}>
+        <Text style={human.title2}>{speed}</Text>
+      </Pane>
+
+      <Pane flex={0}>
+        <TouchableHaptic onPress={() => toggleGasFormat(!showGasInCurrency)}>
+          <Pane flex={0} flexDirection="row">
+            <Pill style={{ marginRight: 8 }}>{formatTime(wait)}</Pill>
+
+            <Pill>
+              {showGasInCurrency ? `${symbol}${gasInCurrency}` : `${gas} Gwei`}
+            </Pill>
+          </Pane>
+        </TouchableHaptic>
+      </Pane>
+    </Pane>
+  );
+};
 
 export default class App extends React.Component {
   constructor(props) {
@@ -218,27 +308,6 @@ export default class App extends React.Component {
     );
   }
 
-  _viewAddress(address) {
-    ActionSheetIOS.showActionSheetWithOptions(
-      {
-        options: ["Cancel", "View on Alethio", "View on Etherscan"],
-        cancelButtonIndex: 0
-      },
-      buttonIndex => {
-        switch (buttonIndex) {
-          case 1:
-            WebBrowser.openBrowserAsync(`https://aleth.io/account/${address}`);
-            break;
-          case 2:
-            WebBrowser.openBrowserAsync(
-              `https://etherscan.io/address/${address}`
-            );
-            break;
-        }
-      }
-    );
-  }
-
   _changeCurrency() {
     const currencyOptionArray = ["USD", "GBP", "EUR", "CAD", "CNY"];
 
@@ -290,14 +359,14 @@ export default class App extends React.Component {
       );
     }
 
-    const { slow, average, fast } = this.state.gasData;
+    const { fast, average, slow } = this.state.gasData;
 
     const gasSpeeds = [
       {
-        key: "safeLow",
-        speed: "Slow",
-        gas: slow.price,
-        wait: slow.time
+        key: "fast",
+        speed: "Fast",
+        gas: fast.price,
+        wait: fast.time
       },
       {
         key: "average",
@@ -306,10 +375,10 @@ export default class App extends React.Component {
         wait: average.time
       },
       {
-        key: "fast",
-        speed: "Fast",
-        gas: fast.price,
-        wait: fast.time
+        key: "safeLow",
+        speed: "Slow",
+        gas: slow.price,
+        wait: slow.time
       }
     ];
 
@@ -318,27 +387,10 @@ export default class App extends React.Component {
         <Header action={() => this._openSettings()} />
 
         <Pane flex={0}>
-          <TouchableHaptic
-            onPress={() =>
-              this.setState(prevState => ({
-                showEthCurrencyValue: !prevState.showEthCurrencyValue
-              }))
-            }
-          >
-            <Text
-              style={{
-                ...human.largeTitleObject,
-                ...sanFranciscoWeights.black,
-                marginTop: 24
-              }}
-            >
-              {this.state.showEthCurrencyValue
-                ? `${currencies[this.state.nativeCurrency].symbol}${big(
-                    this.state.ethData[this.state.nativeCurrency]
-                  ).toFixed(2)}`
-                : `1 ETH`}
-            </Text>
-          </TouchableHaptic>
+          <EthereumPrice
+            nativeCurrency={this.state.nativeCurrency}
+            ethData={this.state.ethData}
+          />
         </Pane>
 
         <Divider mt={24} />
@@ -360,39 +412,14 @@ export default class App extends React.Component {
           </Gutter>
 
           <Gutter>
-            {gasSpeeds.reverse().map((item, index) => (
-              <React.Fragment key={item.key}>
-                <Pane
-                  flex={1}
-                  flexDirection="row"
-                  justifyContent="space-between"
+            {gasSpeeds.map((item, index) => (
+              <React.Fragment key={index}>
+                <GasSpeed
+                  {...item}
+                  nativeCurrency={this.state.nativeCurrency}
+                  ethData={this.state.ethData}
                   style={{ marginBottom: index !== gasSpeeds.length - 1 && 16 }}
-                >
-                  <Pane flex={0} alignItems="flex-start" height={32}>
-                    <Text style={human.title2}>{item.speed}</Text>
-                  </Pane>
-
-                  <Pane flex={0}>
-                    <TouchableHaptic onPress={() => this._toggleGasFormat()}>
-                      <Pane flex={0} flexDirection="row">
-                        <Pill style={{ marginRight: 8 }}>
-                          {formatTime(item.wait)}
-                        </Pill>
-
-                        <Pill>
-                          {this.state.showGasInCurrency
-                            ? `${
-                                currencies[this.state.nativeCurrency].symbol
-                              }${formatCurrency(
-                                item.gas,
-                                this.state.ethData[this.state.nativeCurrency]
-                              )}`
-                            : `${item.gas} Gwei`}
-                        </Pill>
-                      </Pane>
-                    </TouchableHaptic>
-                  </Pane>
-                </Pane>
+                />
                 {index !== gasSpeeds.length - 1 && <Divider mb={16} />}
               </React.Fragment>
             ))}
@@ -409,26 +436,7 @@ export default class App extends React.Component {
 
           <Gutter>
             {this.state.guzzlerData.slice(0, 10).map((guzzler, index) => (
-              <View key={index} style={{ marginBottom: 16 }}>
-                <TouchableHaptic
-                  onPress={() => this._viewAddress(guzzler.address)}
-                >
-                  <Pane
-                    flexDirection="row"
-                    justifyContent="space-between"
-                    height={32}
-                  >
-                    <Pane flexDirection="row" flex={0}>
-                      <AddressIcon address={guzzler.address} />
-                      <Text style={human.body}>
-                        {truncateMiddle(guzzler.address, 10, 4, "…")}
-                      </Text>
-                    </Pane>
-
-                    <Pill small>{guzzler.pct.toFixed(2)}%</Pill>
-                  </Pane>
-                </TouchableHaptic>
-              </View>
+              <Guzzler key={index} {...guzzler} />
             ))}
           </Gutter>
         </RefreshSwiper>
