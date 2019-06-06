@@ -6,7 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Pane from "../Pane";
 import TouchableHaptic from "../TouchableHaptic";
 
-import constants from "../../styles/constants";
+import { headerOffset } from "../../constants";
 
 const Header = ({ action }) => (
   <Pane
@@ -18,7 +18,7 @@ const Header = ({ action }) => (
     }}
   >
     <Pane flex={0} height={40} width={40} />
-    <Pane flex={0} height={constants.headerOffset}>
+    <Pane flex={0} height={headerOffset}>
       <Image
         style={{ width: 72, height: 72 }}
         source={require("../../images/mascot.png")}

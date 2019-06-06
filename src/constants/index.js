@@ -1,4 +1,4 @@
-import { Constants } from "expo";
+import Constants from "expo-constants";
 
 const constants = {
   headerOffset: 80,
@@ -8,4 +8,14 @@ const constants = {
   model: Constants.platform.ios.model
 };
 
+const feedbackTemplate = `
+
+---
+Build: ${constants.buildNumber}
+App Version: ${constants.version}
+iOS Version: ${constants.systemVersion}
+Device: ${constants.model}
+`;
+
 export default constants;
+export { feedbackTemplate };

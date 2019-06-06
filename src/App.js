@@ -25,7 +25,7 @@ import Title from "./components/Title";
 import Gutter from "./components/Gutter";
 import AddressIcon from "./components/AddressIcon";
 
-import constants from "./styles/constants";
+import constants, { feedbackTemplate } from "./constants";
 
 import {
   big,
@@ -38,15 +38,6 @@ import {
 const gasEndpoint = `https://ethereum-api.xyz/gas-prices`;
 const ethEndpoint = `https://ethereum-api.xyz/eth-prices`;
 const guzzlersEndpoint = `https://ethereum-api.xyz/gas-guzzlers`;
-
-const feedbackTemplate = `
-
----
-Build: ${constants.buildNumber}
-App Version: ${constants.version}
-iOS Version: ${constants.systemVersion}
-Device: ${constants.model}
-`;
 
 export default class App extends React.Component {
   constructor(props) {
