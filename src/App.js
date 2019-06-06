@@ -101,34 +101,32 @@ export default class App extends React.Component {
 
   _handleConnectivityChange = isConnected => this.setState({ isConnected });
 
-  _fetchData() {
+  async _fetchData() {
     if (this.state.isConnected) {
-      return fetch(gasEndpoint)
-        .then(res => res.json())
-        .then(json => {
-          this.setState({ gasData: json.result });
-        })
-        .then(() => fetch(`${ethEndpoint}?fiat=${this.state.nativeCurrency}`))
-        .then(res => res.json())
-        .then(json => {
-          this.setState({ ethData: json.result });
-        })
-        .then(() => fetch(guzzlersEndpoint))
-        .then(res => res.json())
-        .then(json => {
-          this.setState({ guzzlerData: json.result });
-        })
-        .then(() =>
-          store.update("cache", {
-            gasData: this.state.gasData,
-            ethData: this.state.ethData,
-            guzzlerData: this.state.guzzlerData.slice(0, 10)
-          })
-        )
-        .catch(error => {
-          this.setState({ hasErrored: true });
-          this._handleError();
+      try {
+        const gasResponse = await fetch(gasEndpoint);
+        const gasResponseJson = await gasResponse.json();
+        this.setState({ gasData: gasResponseJson.result });
+
+        const ethPriceResponse = await fetch(
+          `${ethEndpoint}?fiat=${this.state.nativeCurrency}`
+        );
+        const ethPriceResponseJson = await ethPriceResponse.json();
+        this.setState({ ethData: ethPriceResponseJson.result });
+
+        const guzzlerResponse = await fetch(guzzlersEndpoint);
+        const guzzlerResponseJson = await guzzlerResponse.json();
+        this.setState({ guzzlerData: guzzlerResponseJson.result });
+
+        return await store.update("cache", {
+          gasData: this.state.gasData,
+          ethData: this.state.ethData,
+          guzzlerData: this.state.guzzlerData.slice(0, 10)
         });
+      } catch (error) {
+        this.setState({ hasErrored: true });
+        this._handleError();
+      }
     }
 
     return Promise.resolve();
