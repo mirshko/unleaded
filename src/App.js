@@ -1,17 +1,7 @@
-import React, { useState } from "react";
-import {
-  Text,
-  ActivityIndicator,
-  ActionSheetIOS,
-  Alert,
-  View,
-  Clipboard,
-  NetInfo
-} from "react-native";
+import React, { useState, useEffect } from "react";
+import { Text, ActivityIndicator, ActionSheetIOS, View } from "react-native";
 import * as WebBrowser from "expo-web-browser";
-import * as MailComposer from "expo-mail-composer";
 import { human, sanFranciscoWeights } from "react-native-typography";
-import store from "react-native-simple-store";
 import truncateMiddle from "truncate-middle";
 
 import Header from "./components/Header";
@@ -26,21 +16,15 @@ import Title from "./components/Title";
 import Gutter from "./components/Gutter";
 import AddressIcon from "./components/AddressIcon";
 
-import constants, { feedbackTemplate } from "./constants";
+import constants from "./constants";
+import { Config, DataContainer } from "./containers";
 
-import {
-  big,
-  formatCurrency,
-  formatTime,
-  currencies,
-  loadConfig
-} from "./helpers";
+import { big, formatCurrency, formatTime, currencies } from "./helpers";
 
-const gasEndpoint = `https://ethereum-api.xyz/gas-prices`;
-const ethEndpoint = `https://ethereum-api.xyz/eth-prices`;
-const guzzlersEndpoint = `https://ethereum-api.xyz/gas-guzzlers`;
+const EthereumPrice = () => {
+  const { nativeCurrency } = Config.useContainer();
+  const { ethData } = DataContainer.useContainer();
 
-const EthereumPrice = ({ nativeCurrency, ethData }) => {
   const [toggle, setToggle] = useState(true);
 
   return (
@@ -102,11 +86,14 @@ const Guzzler = ({ address, pct, ...rest }) => {
   );
 };
 
-const GasSpeed = ({ speed, wait, gas, nativeCurrency, ethData, ...rest }) => {
+const GasSpeed = ({ speed, wait, gas, ...rest }) => {
+  const config = Config.useContainer();
+  const { ethData } = DataContainer.useContainer();
+
   const [showGasInCurrency, toggleGasFormat] = useState(true);
 
-  const symbol = currencies[nativeCurrency].symbol;
-  const gasInCurrency = formatCurrency(gas, ethData[nativeCurrency]);
+  const symbol = currencies[config.nativeCurrency].symbol;
+  const gasInCurrency = formatCurrency(gas, ethData[config.nativeCurrency]);
 
   return (
     <Pane flex={1} flexDirection="row" justifyContent="space-between" {...rest}>
@@ -129,318 +116,113 @@ const GasSpeed = ({ speed, wait, gas, nativeCurrency, ethData, ...rest }) => {
   );
 };
 
-export default class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isLoading: true,
-      isConnected: true,
-      hasErrored: false,
-      showGasInCurrency: false,
-      showEthCurrencyValue: true,
-      nativeCurrency: "USD",
-      refreshing: false
-    };
-  }
+const App = () => {
+  const config = Config.useContainer();
+  const data = DataContainer.useContainer();
 
-  componentDidMount() {
-    NetInfo.isConnected.addEventListener(
-      "connectionChange",
-      this._handleConnectivityChange
-    );
+  useEffect(() => {
+    config.restoreUserConfig();
+    data.restoreLastRefreshFromCache();
+  }, []);
 
-    this._restoreLastRefreshFromCache();
-
-    store.get("config").then(config => {
-      if (loadConfig(config))
-        this.setState(prevState => ({
-          showGasInCurrency:
-            config.showGasInCurrency || prevState.showGasInCurrency,
-          nativeCurrency: config.nativeCurrency || prevState.nativeCurrency
-        }));
-
-      return;
-    });
-  }
-
-  componentWillUnmount() {
-    NetInfo.isConnected.removeEventListener(
-      "connectionChange",
-      this._handleConnectivityChange
-    );
-  }
-
-  _restoreLastRefreshFromCache() {
-    store.get("cache").then(cache => {
-      if (loadConfig(cache)) {
-        this.setState(
-          prevState => ({
-            gasData: cache.gasData || prevState.gasData,
-            ethData: cache.ethData || prevState.ethData,
-            guzzlerData: cache.guzzlerData || prevState.guzzlerData
-          }),
-          () => this.setState({ isLoading: false })
-        );
-      } else {
-        this._fetchData().then(() => {
-          this.setState({ isLoading: false });
-        });
-      }
-    });
-  }
-
-  _handleConnectivityChange = isConnected => this.setState({ isConnected });
-
-  async _fetchData() {
-    if (this.state.isConnected) {
-      try {
-        const gasResponse = await fetch(gasEndpoint);
-        const gasResponseJson = await gasResponse.json();
-        this.setState({ gasData: gasResponseJson.result });
-
-        const ethPriceResponse = await fetch(
-          `${ethEndpoint}?fiat=${this.state.nativeCurrency}`
-        );
-        const ethPriceResponseJson = await ethPriceResponse.json();
-        this.setState({ ethData: ethPriceResponseJson.result });
-
-        const guzzlerResponse = await fetch(guzzlersEndpoint);
-        const guzzlerResponseJson = await guzzlerResponse.json();
-        this.setState({ guzzlerData: guzzlerResponseJson.result });
-
-        return await store.update("cache", {
-          gasData: this.state.gasData,
-          ethData: this.state.ethData,
-          guzzlerData: this.state.guzzlerData.slice(0, 10)
-        });
-      } catch (error) {
-        this.setState({ hasErrored: true });
-        this._handleError();
-      }
-    }
-
-    return Promise.resolve();
-  }
-
-  _toggleGasFormat() {
-    this.setState(prevState => {
-      store.update("config", {
-        showGasInCurrency: !prevState.showGasInCurrency
-      });
-
-      return {
-        showGasInCurrency: !prevState.showGasInCurrency
-      };
-    });
-  }
-
-  _sendFeedback() {
-    MailComposer.composeAsync({
-      recipients: ["unleaded@reiner.design"],
-      subject: "Unleaded Feedback",
-      body: feedbackTemplate
-    }).catch(() =>
-      Alert.alert("Unable To Send Feedback", undefined, [
-        {
-          text: "Copy feedback email",
-          onPress: () => {
-            Clipboard.setString("unleaded@reiner.design");
-          }
-        },
-        {
-          text: "OK"
-        }
-      ])
-    );
-  }
-
-  _handleError() {
-    Alert.alert(
-      "Unable To Load Data",
-      "Ethereum and gas data can not be loaded at this time.",
-      [
-        {
-          text: "Reload",
-          onPress: () => {
-            this.setState({ isLoading: true, hasErrored: false });
-
-            this._fetchData().then(() => {
-              this.setState({ isLoading: false });
-            });
-          }
-        }
-      ]
-    );
-  }
-
-  _openSettings() {
-    ActionSheetIOS.showActionSheetWithOptions(
-      {
-        options: [
-          "Cancel",
-          "About",
-          "Leave feedback",
-          "Change your currency",
-          `${
-            this.state.showGasInCurrency
-              ? "Show gas in Gwei"
-              : "Show gas in currency"
-          }`
-        ],
-        cancelButtonIndex: 0
-      },
-      buttonIndex => {
-        switch (buttonIndex) {
-          case 1:
-            WebBrowser.openBrowserAsync(`https://unleaded.reiner.design/`);
-            break;
-          case 2:
-            this._sendFeedback();
-            break;
-          case 3:
-            this._changeCurrency();
-            break;
-          case 4:
-            this._toggleGasFormat();
-            break;
-        }
-      }
-    );
-  }
-
-  _changeCurrency() {
-    const currencyOptionArray = ["USD", "GBP", "EUR", "CAD", "CNY"];
-
-    ActionSheetIOS.showActionSheetWithOptions(
-      {
-        options: ["Cancel", ...currencyOptionArray],
-        cancelButtonIndex: 0
-      },
-      buttonIndex => {
-        if (buttonIndex > 0) {
-          const selectedCurrency = currencyOptionArray[buttonIndex - 1];
-
-          this.setState({ nativeCurrency: selectedCurrency });
-
-          store.update("config", { nativeCurrency: selectedCurrency });
-
-          this._handleHardRefresh();
-        }
-      }
-    );
-  }
-
-  _handleHardRefresh() {
-    this.setState({ isLoading: true });
-
-    this._fetchData().then(() => {
-      this.setState({ isLoading: false });
-    });
-  }
-
-  _handleRefresh() {
-    this.setState({ refreshing: true });
-
-    this._fetchData().then(() => {
-      this.setState({ refreshing: false });
-    });
-  }
-
-  render() {
-    if (this.state.hasErrored || this.state.isLoading) {
-      return (
-        <Container>
-          <Header action={() => this._openSettings()} />
-
-          <Pane style={{ marginBottom: constants.headerOffset }}>
-            {this.state.isLoading && <ActivityIndicator size="large" />}
-          </Pane>
-        </Container>
-      );
-    }
-
-    const { fast, average, slow } = this.state.gasData;
-
-    const gasSpeeds = [
-      {
-        key: "fast",
-        speed: "Fast",
-        gas: fast.price,
-        wait: fast.time
-      },
-      {
-        key: "average",
-        speed: "Average",
-        gas: average.price,
-        wait: average.time
-      },
-      {
-        key: "safeLow",
-        speed: "Slow",
-        gas: slow.price,
-        wait: slow.time
-      }
-    ];
-
+  if (data.hasErrored || data.isLoading)
     return (
       <Container>
-        <Header action={() => this._openSettings()} />
+        <Header />
 
-        <Pane flex={0}>
-          <EthereumPrice
-            nativeCurrency={this.state.nativeCurrency}
-            ethData={this.state.ethData}
-          />
+        <Pane style={{ marginBottom: constants.headerOffset }}>
+          {data.isLoading && <ActivityIndicator size="large" />}
         </Pane>
-
-        <Divider mt={24} />
-
-        <RefreshSwiper
-          refreshFunc={() => this._handleRefresh()}
-          refreshingState={this.state.refreshing}
-        >
-          <Gutter>
-            <Pane
-              flex={0}
-              alignItems="unset"
-              justifyContent="unset"
-              style={{ marginBottom: 24, marginTop: 24 }}
-            >
-              <Title>Gas Speeds</Title>
-              <Caps>By Cost</Caps>
-            </Pane>
-          </Gutter>
-
-          <Gutter>
-            {gasSpeeds.map((item, index) => (
-              <React.Fragment key={index}>
-                <GasSpeed
-                  {...item}
-                  nativeCurrency={this.state.nativeCurrency}
-                  ethData={this.state.ethData}
-                  style={{ marginBottom: index !== gasSpeeds.length - 1 && 16 }}
-                />
-                {index !== gasSpeeds.length - 1 && <Divider mb={16} />}
-              </React.Fragment>
-            ))}
-          </Gutter>
-
-          <Divider mb={24} mt={24} />
-
-          <Gutter>
-            <View style={{ marginBottom: 24 }}>
-              <Title>Gas Guzzlers</Title>
-              <Caps>By Percent</Caps>
-            </View>
-          </Gutter>
-
-          <Gutter>
-            {this.state.guzzlerData.slice(0, 10).map((guzzler, index) => (
-              <Guzzler key={index} {...guzzler} />
-            ))}
-          </Gutter>
-        </RefreshSwiper>
       </Container>
     );
-  }
-}
+
+  const { fast, average, slow } = data.gasData;
+  const gasSpeeds = [
+    {
+      key: "fast",
+      speed: "Fast",
+      gas: fast.price,
+      wait: fast.time
+    },
+    {
+      key: "average",
+      speed: "Average",
+      gas: average.price,
+      wait: average.time
+    },
+    {
+      key: "safeLow",
+      speed: "Slow",
+      gas: slow.price,
+      wait: slow.time
+    }
+  ];
+
+  return (
+    <Container>
+      <Header />
+
+      <Pane flex={0}>
+        <EthereumPrice />
+      </Pane>
+
+      <Divider mt={24} />
+
+      <RefreshSwiper
+        refreshFunc={() => data.handleRefresh()}
+        refreshingState={data.refreshing}
+      >
+        <Gutter>
+          <Pane
+            flex={0}
+            alignItems="unset"
+            justifyContent="unset"
+            style={{ marginBottom: 24, marginTop: 24 }}
+          >
+            <Title>Gas Speeds</Title>
+            <Caps>By Cost</Caps>
+          </Pane>
+        </Gutter>
+
+        <Gutter>
+          {gasSpeeds.map((item, index) => (
+            <React.Fragment key={index}>
+              <GasSpeed
+                {...item}
+                style={{
+                  marginBottom: index !== gasSpeeds.length - 1 && 16
+                }}
+              />
+              {index !== gasSpeeds.length - 1 && <Divider mb={16} />}
+            </React.Fragment>
+          ))}
+        </Gutter>
+
+        <Divider mb={24} mt={24} />
+
+        <Gutter>
+          <View style={{ marginBottom: 24 }}>
+            <Title>Gas Guzzlers</Title>
+            <Caps>By Percent</Caps>
+          </View>
+        </Gutter>
+
+        <Gutter>
+          {data.guzzlerData.slice(0, 10).map((guzzler, index) => (
+            <Guzzler key={index} {...guzzler} />
+          ))}
+        </Gutter>
+      </RefreshSwiper>
+    </Container>
+  );
+};
+
+const AppWrapper = () => (
+  <Config.Provider>
+    <DataContainer.Provider>
+      <App />
+    </DataContainer.Provider>
+  </Config.Provider>
+);
+
+export default AppWrapper;

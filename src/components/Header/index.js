@@ -1,14 +1,12 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Image } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 
 import Pane from "../Pane";
-import TouchableHaptic from "../TouchableHaptic";
+import Settings from "../Settings";
 
 import { headerOffset } from "../../constants";
 
-const Header = ({ action }) => (
+const Header = () => (
   <Pane
     flex={0}
     justifyContent="space-between"
@@ -24,16 +22,8 @@ const Header = ({ action }) => (
         source={require("../../images/mascot.png")}
       />
     </Pane>
-    <TouchableHaptic onPress={action}>
-      <Pane flex={0} height={40} width={40}>
-        <Ionicons name="ios-more" size={32} />
-      </Pane>
-    </TouchableHaptic>
+    <Settings />
   </Pane>
 );
-
-Header.propTypes = {
-  action: PropTypes.func.isRequired
-};
 
 export default Header;
