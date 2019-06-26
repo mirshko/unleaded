@@ -1,123 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { Text, ActivityIndicator, ActionSheetIOS, View } from "react-native";
-import * as WebBrowser from "expo-web-browser";
-import { human, sanFranciscoWeights } from "react-native-typography";
-import truncateMiddle from "truncate-middle";
+import React, { useEffect } from "react";
+import { ActivityIndicator, View } from "react-native";
 
 import Header from "./components/Header";
 import Container from "./components/Container";
 import RefreshSwiper from "./components/RefreshSwiper";
-import TouchableHaptic from "./components/TouchableHaptic";
 import Pane from "./components/Pane";
 import Divider from "./components/Divider";
-import Pill from "./components/Pill";
 import Caps from "./components/Caps";
 import Title from "./components/Title";
 import Gutter from "./components/Gutter";
-import AddressIcon from "./components/AddressIcon";
+import Guzzler from "./components/Guzzler";
+import GasSpeed from "./components/GasSpeed";
+import EthereumPrice from "./components/EthereumPrice";
 
 import constants from "./constants";
+
 import { AppContainer } from "./containers";
-
-import { big, formatCurrency, formatTime, currencies } from "./helpers";
-
-const EthereumPrice = () => {
-  const { nativeCurrency, ethData } = AppContainer.useContainer();
-
-  const [toggle, setToggle] = useState(true);
-
-  return (
-    <TouchableHaptic onPress={() => setToggle(!toggle)}>
-      <Text
-        style={{
-          ...human.largeTitleObject,
-          ...sanFranciscoWeights.black,
-          marginTop: 24
-        }}
-      >
-        {toggle
-          ? `${currencies[nativeCurrency].symbol}${big(
-              ethData[nativeCurrency]
-            ).toFixed(2)}`
-          : `1 ETH`}
-      </Text>
-    </TouchableHaptic>
-  );
-};
-
-const Guzzler = ({ address, pct, ...rest }) => {
-  const viewAddress = address => {
-    ActionSheetIOS.showActionSheetWithOptions(
-      {
-        options: ["Cancel", "View on Alethio", "View on Etherscan"],
-        cancelButtonIndex: 0
-      },
-      buttonIndex => {
-        switch (buttonIndex) {
-          case 1:
-            WebBrowser.openBrowserAsync(`https://aleth.io/account/${address}`);
-            break;
-          case 2:
-            WebBrowser.openBrowserAsync(
-              `https://etherscan.io/address/${address}`
-            );
-            break;
-        }
-      }
-    );
-  };
-
-  return (
-    <View style={{ marginBottom: 16 }} {...rest}>
-      <TouchableHaptic onPress={() => viewAddress(address)}>
-        <Pane flexDirection="row" justifyContent="space-between" height={32}>
-          <Pane flexDirection="row" flex={0}>
-            <AddressIcon address={address} />
-            <Text style={human.body}>
-              {truncateMiddle(address, 10, 4, "…")}
-            </Text>
-          </Pane>
-
-          <Pill small>{pct.toFixed(2)}%</Pill>
-        </Pane>
-      </TouchableHaptic>
-    </View>
-  );
-};
-
-const GasSpeed = ({ speed, wait, gas, ...rest }) => {
-  const {
-    nativeCurrency,
-    ethData,
-    showGasInCurrency,
-    toggleShowGasInCurrency
-  } = AppContainer.useContainer();
-
-  const symbol = currencies[nativeCurrency].symbol;
-  const gasInCurrency = formatCurrency(gas, ethData[nativeCurrency]);
-
-  return (
-    <Pane flex={1} flexDirection="row" justifyContent="space-between" {...rest}>
-      <Pane flex={0} alignItems="flex-start" height={32}>
-        <Text style={human.title2}>{speed}</Text>
-      </Pane>
-
-      <Pane flex={0}>
-        <TouchableHaptic
-          onPress={() => toggleShowGasInCurrency(!showGasInCurrency)}
-        >
-          <Pane flex={0} flexDirection="row">
-            <Pill style={{ marginRight: 8 }}>{formatTime(wait)}</Pill>
-
-            <Pill>
-              {showGasInCurrency ? `${symbol}${gasInCurrency}` : `${gas} Gwei`}
-            </Pill>
-          </Pane>
-        </TouchableHaptic>
-      </Pane>
-    </Pane>
-  );
-};
 
 const App = () => {
   const data = AppContainer.useContainer();
@@ -168,7 +66,7 @@ const App = () => {
         <EthereumPrice />
       </Pane>
 
-      <Divider mt={24} />
+      <Divider mt={constants.spacing.xlarge} />
 
       <RefreshSwiper
         refreshFunc={() => data.handleRefresh()}
@@ -179,7 +77,10 @@ const App = () => {
             flex={0}
             alignItems="unset"
             justifyContent="unset"
-            style={{ marginBottom: 24, marginTop: 24 }}
+            style={{
+              marginBottom: constants.spacing.xlarge,
+              marginTop: constants.spacing.xlarge
+            }}
           >
             <Title>Gas Speeds</Title>
             <Caps>By Cost</Caps>
@@ -192,18 +93,21 @@ const App = () => {
               <GasSpeed
                 {...item}
                 style={{
-                  marginBottom: index !== gasSpeeds.length - 1 && 16
+                  marginBottom:
+                    index !== gasSpeeds.length - 1 && constants.spacing.large
                 }}
               />
-              {index !== gasSpeeds.length - 1 && <Divider mb={16} />}
+              {index !== gasSpeeds.length - 1 && (
+                <Divider mb={constants.spacing.large} />
+              )}
             </React.Fragment>
           ))}
         </Gutter>
 
-        <Divider mb={24} mt={24} />
+        <Divider mb={constants.spacing.xlarge} mt={constants.spacing.xlarge} />
 
         <Gutter>
-          <View style={{ marginBottom: 24 }}>
+          <View style={{ marginBottom: constants.spacing.xlarge }}>
             <Title>Gas Guzzlers</Title>
             <Caps>By Percent</Caps>
           </View>

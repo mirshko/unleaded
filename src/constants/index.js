@@ -5,7 +5,16 @@ const constants = {
   buildNumber: Constants.manifest.ios.buildNumber,
   version: Constants.manifest.version,
   systemVersion: Constants.platform.ios.systemVersion,
-  model: Constants.platform.ios.model
+  model: Constants.platform.ios.model,
+  spacing: {
+    tiny: 2,
+    small: 4,
+    medium: 8,
+    large: 16,
+    mlarge: 20,
+    xlarge: 24,
+    xxlarge: 32
+  }
 };
 
 const feedbackTemplate = `

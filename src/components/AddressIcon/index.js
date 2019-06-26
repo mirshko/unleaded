@@ -1,35 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Animated } from "react-native";
 import { iOSColors } from "react-native-typography";
 
-class FadeInImage extends React.Component {
-  state = {
-    opacity: new Animated.Value(0)
-  };
+import constants from "../../constants";
+
+const FadeInImage = props => {
+  const [opacity, setOpacity] = useState(new Animated.Value(0));
 
   _onLoad = () => {
-    Animated.timing(this.state.opacity, {
+    Animated.timing(opacity, {
       toValue: 1,
       duration: 150,
       useNativeDriver: true
     }).start();
   };
 
-  render() {
-    return (
-      <Animated.Image
-        onLoad={this._onLoad}
-        {...this.props}
-        style={[
-          {
-            opacity: this.state.opacity
-          },
-          this.props.style
-        ]}
-      />
-    );
-  }
-}
+  return (
+    <Animated.Image
+      onLoad={_onLoad}
+      {...props}
+      style={[
+        {
+          opacity
+        },
+        props.style
+      ]}
+    />
+  );
+};
 
 const AddressIcon = ({ address }) => (
   <View
@@ -38,7 +36,7 @@ const AddressIcon = ({ address }) => (
       backgroundColor: iOSColors.customGray,
       height: 32,
       width: 32,
-      marginRight: 16
+      marginRight: constants.spacing.large
     }}
   >
     <FadeInImage
