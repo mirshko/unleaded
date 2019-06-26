@@ -7,13 +7,12 @@ import * as WebBrowser from "expo-web-browser";
 import TouchableHaptic from "../TouchableHaptic";
 import Pane from "../Pane";
 
-import { Config, DataContainer } from "../../containers";
+import { AppContainer } from "../../containers";
 
 import { feedbackTemplate } from "../../constants";
 
 const Settings = () => {
-  const config = Config.useContainer();
-  const data = DataContainer.useContainer();
+  const data = AppContainer.useContainer();
 
   const sendFeedback = () => {
     MailComposer.composeAsync({
@@ -42,9 +41,7 @@ const Settings = () => {
           "Leave feedback",
           "Change your currency",
           `${
-            config.showGasInCurrency
-              ? "Show gas in Gwei"
-              : "Show gas in currency"
+            data.showGasInCurrency ? "Show gas in Gwei" : "Show gas in currency"
           }`
         ],
         cancelButtonIndex: 0
@@ -61,7 +58,7 @@ const Settings = () => {
             data.handleChangeCurrency();
             break;
           case 4:
-            config.handleShowGasInCurrency();
+            data.handleShowGasInCurrency();
             break;
         }
       }

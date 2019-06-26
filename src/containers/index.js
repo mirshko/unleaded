@@ -9,9 +9,7 @@ const gasEndpoint = `https://ethereum-api.xyz/gas-prices`;
 const ethEndpoint = `https://ethereum-api.xyz/eth-prices`;
 const guzzlersEndpoint = `https://ethereum-api.xyz/gas-guzzlers`;
 
-const useDataContainer = () => {
-  const config = Config.useContainer();
-
+const useApp = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isConnected, setIsConnected] = useState(true);
   const [hasErrored, setHasErrored] = useState(false);
@@ -20,6 +18,27 @@ const useDataContainer = () => {
   const [gasData, setGasData] = useState({});
   const [ethData, setEthData] = useState({});
   const [guzzlerData, setGuzzlerData] = useState({});
+
+  const [showGasInCurrency, toggleShowGasInCurrency] = useState(false);
+  const [nativeCurrency, setNativeCurrency] = useState("USD");
+
+  const handleShowGasInCurrency = () => {
+    toggleShowGasInCurrency(!showGasInCurrency);
+
+    store.update("config", {
+      showGasInCurrency: !showGasInCurrency
+    });
+  };
+
+  const restoreUserConfig = () =>
+    store.get("config").then(config => {
+      if (loadConfig(config)) {
+        toggleShowGasInCurrency(config.showGasInCurrency || showGasInCurrency);
+        setNativeCurrency(config.nativeCurrency || nativeCurrency);
+      }
+
+      return;
+    });
 
   const handleHardRefresh = () => {
     setIsLoading(true);
@@ -45,7 +64,7 @@ const useDataContainer = () => {
         if (buttonIndex > 0) {
           const selectedCurrency = currencyOptionArray[buttonIndex - 1];
 
-          config.setNativeCurrency(selectedCurrency);
+          setNativeCurrency(selectedCurrency);
 
           store.update("config", { nativeCurrency: selectedCurrency });
 
@@ -81,7 +100,7 @@ const useDataContainer = () => {
         setGasData(gasResponseJson.result);
 
         const ethPriceResponse = await fetch(
-          `${ethEndpoint}?fiat=${config.nativeCurrency}`
+          `${ethEndpoint}?fiat=${nativeCurrency}`
         );
         const ethPriceResponseJson = await ethPriceResponse.json();
         setEthData(ethPriceResponseJson.result);
@@ -91,9 +110,9 @@ const useDataContainer = () => {
         setGuzzlerData(guzzlerResponseJson.result);
 
         return await store.update("cache", {
-          gasData: gasData,
-          ethData: ethData,
-          guzzlerData: guzzlerData.slice(0, 10)
+          gasData,
+          ethData,
+          guzzlerData
         });
       } catch (error) {
         setHasErrored(true);
@@ -140,35 +159,8 @@ const useDataContainer = () => {
     handleChangeCurrency,
     handleRefresh,
     fetchData,
-    restoreLastRefreshFromCache
-  };
-};
+    restoreLastRefreshFromCache,
 
-let DataContainer = createContainer(useDataContainer);
-
-const useConfig = () => {
-  const [showGasInCurrency, toggleShowGasInCurrency] = useState(false);
-  const [nativeCurrency, setNativeCurrency] = useState("USD");
-
-  const handleShowGasInCurrency = () => {
-    toggleShowGasInCurrency(!showGasInCurrency);
-
-    store.update("config", {
-      showGasInCurrency: !showGasInCurrency
-    });
-  };
-
-  const restoreUserConfig = () =>
-    store.get("config").then(config => {
-      if (loadConfig(config)) {
-        toggleShowGasInCurrency(config.showGasInCurrency || showGasInCurrency);
-        setNativeCurrency(config.nativeCurrency || nativeCurrency);
-      }
-
-      return;
-    });
-
-  return {
     showGasInCurrency,
     toggleShowGasInCurrency,
     handleShowGasInCurrency,
@@ -178,6 +170,6 @@ const useConfig = () => {
   };
 };
 
-let Config = createContainer(useConfig);
+let AppContainer = createContainer(useApp);
 
-export { useConfig, Config, DataContainer };
+export { AppContainer };

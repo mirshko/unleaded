@@ -17,13 +17,12 @@ import Gutter from "./components/Gutter";
 import AddressIcon from "./components/AddressIcon";
 
 import constants from "./constants";
-import { Config, DataContainer } from "./containers";
+import { AppContainer } from "./containers";
 
 import { big, formatCurrency, formatTime, currencies } from "./helpers";
 
 const EthereumPrice = () => {
-  const { nativeCurrency } = Config.useContainer();
-  const { ethData } = DataContainer.useContainer();
+  const { nativeCurrency, ethData } = AppContainer.useContainer();
 
   const [toggle, setToggle] = useState(true);
 
@@ -87,13 +86,15 @@ const Guzzler = ({ address, pct, ...rest }) => {
 };
 
 const GasSpeed = ({ speed, wait, gas, ...rest }) => {
-  const config = Config.useContainer();
-  const { ethData } = DataContainer.useContainer();
+  const {
+    nativeCurrency,
+    ethData,
+    showGasInCurrency,
+    toggleShowGasInCurrency
+  } = AppContainer.useContainer();
 
-  const [showGasInCurrency, toggleGasFormat] = useState(true);
-
-  const symbol = currencies[config.nativeCurrency].symbol;
-  const gasInCurrency = formatCurrency(gas, ethData[config.nativeCurrency]);
+  const symbol = currencies[nativeCurrency].symbol;
+  const gasInCurrency = formatCurrency(gas, ethData[nativeCurrency]);
 
   return (
     <Pane flex={1} flexDirection="row" justifyContent="space-between" {...rest}>
@@ -102,7 +103,9 @@ const GasSpeed = ({ speed, wait, gas, ...rest }) => {
       </Pane>
 
       <Pane flex={0}>
-        <TouchableHaptic onPress={() => toggleGasFormat(!showGasInCurrency)}>
+        <TouchableHaptic
+          onPress={() => toggleShowGasInCurrency(!showGasInCurrency)}
+        >
           <Pane flex={0} flexDirection="row">
             <Pill style={{ marginRight: 8 }}>{formatTime(wait)}</Pill>
 
@@ -117,11 +120,10 @@ const GasSpeed = ({ speed, wait, gas, ...rest }) => {
 };
 
 const App = () => {
-  const config = Config.useContainer();
-  const data = DataContainer.useContainer();
+  const data = AppContainer.useContainer();
 
   useEffect(() => {
-    config.restoreUserConfig();
+    data.restoreUserConfig();
     data.restoreLastRefreshFromCache();
   }, []);
 
@@ -218,11 +220,9 @@ const App = () => {
 };
 
 const AppWrapper = () => (
-  <Config.Provider>
-    <DataContainer.Provider>
-      <App />
-    </DataContainer.Provider>
-  </Config.Provider>
+  <AppContainer.Provider>
+    <App />
+  </AppContainer.Provider>
 );
 
 export default AppWrapper;
