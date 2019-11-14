@@ -41,3 +41,6 @@ export const loadConfig = config =>
 
 export const formatTime = time =>
   time < 60 ? `~${time} secs` : `~${(time / 60).toFixed(1)} mins`;
+
+export const truncateAddress = address =>
+  `${address.slice(0, 10)}...${address.slice(address.length - 4)}`;

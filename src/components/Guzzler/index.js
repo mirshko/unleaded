@@ -2,7 +2,6 @@ import React from "react";
 import { Text, ActionSheetIOS, View } from "react-native";
 import * as WebBrowser from "expo-web-browser";
 import { human } from "react-native-typography";
-import truncateMiddle from "truncate-middle";
 
 import TouchableHaptic from "../TouchableHaptic";
 import Pane from "../Pane";
@@ -10,6 +9,7 @@ import Pill from "../Pill";
 import AddressIcon from "../AddressIcon";
 
 import constants from "../../constants";
+import { truncateAddress } from "../../helpers";
 
 const Guzzler = ({ address, pct, ...rest }) => {
   const viewAddress = address => {
@@ -39,9 +39,7 @@ const Guzzler = ({ address, pct, ...rest }) => {
         <Pane flexDirection="row" justifyContent="space-between" height={32}>
           <Pane flexDirection="row" flex={0}>
             <AddressIcon address={address} />
-            <Text style={human.body}>
-              {truncateMiddle(address, 10, 4, "…")}
-            </Text>
+            <Text style={human.body}>{truncateAddress(address)}</Text>
           </Pane>
 
           <Pill small>{pct.toFixed(2)}%</Pill>
