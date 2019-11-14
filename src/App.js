@@ -20,11 +20,6 @@ import { AppContainer } from "./containers";
 const App = () => {
   const data = AppContainer.useContainer();
 
-  useEffect(() => {
-    data.restoreUserConfig();
-    data.restoreLastRefreshFromCache();
-  }, []);
-
   if (data.hasErrored || data.isLoading)
     return (
       <Container>
