@@ -17,7 +17,7 @@ const GasSpeed = ({ speed, wait, gas, ...rest }) => {
     nativeCurrency,
     ethData,
     showGasInCurrency,
-    toggleShowGasInCurrency
+    handleShowGasInCurrency
   } = AppContainer.useContainer();
 
   const symbol = currencies[nativeCurrency].symbol;
@@ -30,9 +30,7 @@ const GasSpeed = ({ speed, wait, gas, ...rest }) => {
       </Pane>
 
       <Pane flex={0}>
-        <TouchableHaptic
-          onPress={() => toggleShowGasInCurrency(!showGasInCurrency)}
-        >
+        <TouchableHaptic onPress={handleShowGasInCurrency}>
           <Pane flex={0} flexDirection="row">
             <Pill style={{ marginRight: constants.spacing.medium }}>
               {formatTime(wait)}
