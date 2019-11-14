@@ -8,7 +8,7 @@ import { AppContainer } from "../../containers";
 
 import constants from "../../constants";
 
-import { big, currencies } from "../../helpers";
+import { currencies } from "../../helpers";
 
 const EthereumPrice = () => {
   const { nativeCurrency, ethData } = AppContainer.useContainer();
@@ -25,7 +25,7 @@ const EthereumPrice = () => {
         }}
       >
         {toggle
-          ? `${currencies[nativeCurrency].symbol}${big(
+          ? `${currencies[nativeCurrency].symbol}${Number(
               ethData[nativeCurrency]
             ).toFixed(2)}`
           : `1 ETH`}
