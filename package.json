@@ -4,7 +4,7 @@
   "private": false,
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
+    "build": "expo build:ios",
     "ios": "expo start --ios",
     "eject": "expo eject",
     "format": "prettier --write \"./src/**/*.js\""
