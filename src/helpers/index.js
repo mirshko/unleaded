@@ -27,12 +27,20 @@ export const currencies = {
     name: "GBP"
   },
   CAD: {
-    symbol: `$`,
-    name: `CAD`
+    symbol: "$",
+    name: "CAD"
   },
   CNY: {
-    symbol: `¥`,
-    name: `CNY`
+    symbol: "¥",
+    name: "CNY"
+  },
+  RON: {
+    symbol: "L",
+    name: "RON"
+  },
+  JPY: {
+    symbol: "¥",
+    name: "JPY"
   }
 };
 

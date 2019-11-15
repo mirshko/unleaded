@@ -9,7 +9,7 @@ const gasEndpoint = `https://ethereum-api.xyz/gas-prices`;
 const ethEndpoint = `https://ethereum-api.xyz/eth-prices`;
 const guzzlersEndpoint = `https://ethereum-api.xyz/gas-guzzlers`;
 
-const currencyOptionArray = ["USD", "GBP", "EUR", "CAD", "CNY"];
+const currencyOptionArray = ["USD", "GBP", "EUR", "CAD", "CNY", "RON", "JPY"];
 
 const useApp = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -132,8 +132,6 @@ const useApp = () => {
       const guzzlerResponseJson = await guzzlerResponse.json();
 
       setGuzzlerData(await guzzlerResponseJson.result);
-
-      console.log(ethPriceResponseJson.result);
     } catch (error) {
       setHasErrored(true);
       handleError();
