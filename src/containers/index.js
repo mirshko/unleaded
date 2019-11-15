@@ -3,7 +3,7 @@ import { createContainer } from "unstated-next";
 import { ActionSheetIOS, Alert } from "react-native";
 import store from "react-native-simple-store";
 
-import { loadConfig, currencies } from "../helpers";
+import { loadConfig } from "../helpers";
 
 const gasEndpoint = `https://ethereum-api.xyz/gas-prices`;
 const ethEndpoint = `https://ethereum-api.xyz/eth-prices`;
@@ -13,7 +13,6 @@ const currencyOptionArray = ["USD", "GBP", "EUR", "CAD", "CNY"];
 
 const useApp = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [isConnected, setIsConnected] = useState(true);
   const [hasErrored, setHasErrored] = useState(false);
   const [refreshing, setIsRefreshing] = useState(false);
 
@@ -25,9 +24,7 @@ const useApp = () => {
   const [nativeCurrency, setNativeCurrency] = useState("USD");
 
   useEffect(() => {
-    const boot = async () => {
-      console.log("App Booted");
-
+    const bootApp = async () => {
       await restoreUserConfig();
 
       await fetchData();
@@ -35,7 +32,7 @@ const useApp = () => {
       setIsLoading(false);
     };
 
-    boot();
+    bootApp();
   }, []);
 
   const handleShowGasInCurrency = async () => {
@@ -50,8 +47,6 @@ const useApp = () => {
     try {
       const config = await store.get("config");
 
-      console.log("Config", JSON.stringify(config, null, 2));
-
       if (loadConfig(config)) {
         toggleShowGasInCurrency(
           (await config.showGasInCurrency) || showGasInCurrency
@@ -64,14 +59,6 @@ const useApp = () => {
     }
   };
 
-  const handleHardRefresh = async () => {
-    setIsLoading(true);
-
-    await fetchData();
-
-    setIsLoading(false);
-  };
-
   const handleRefresh = async () => {
     setIsRefreshing(true);
 
@@ -80,26 +67,29 @@ const useApp = () => {
     setIsRefreshing(false);
   };
 
-  const handleCurrencyActionSheetBehavior = async buttonIndex => {
-    const selectedCurrency = currencyOptionArray[buttonIndex - 1];
-
-    setNativeCurrency(selectedCurrency);
-
-    await store.update("config", {
-      nativeCurrency: selectedCurrency
-    });
-
-    handleHardRefresh();
-  };
-
   const handleChangeCurrency = () => {
     ActionSheetIOS.showActionSheetWithOptions(
       {
         options: ["Cancel", ...currencyOptionArray],
         cancelButtonIndex: 0
       },
-      buttonIndex =>
-        buttonIndex > 0 && handleCurrencyActionSheetBehavior(buttonIndex)
+      async buttonIndex => {
+        if (buttonIndex > 0) {
+          setIsLoading(true);
+
+          const selectedCurrency = currencyOptionArray[buttonIndex - 1];
+
+          setNativeCurrency(selectedCurrency);
+
+          await store.update("config", {
+            nativeCurrency: selectedCurrency
+          });
+
+          await fetchData();
+
+          setIsLoading(false);
+        }
+      }
     );
   };
 
@@ -123,28 +113,30 @@ const useApp = () => {
     );
 
   const fetchData = async () => {
-    console.log(nativeCurrency, "nativeCurrency");
-    console.log(showGasInCurrency, "showGasInCurrency");
+    const config = await store.get("config");
 
-    if (isConnected) {
-      try {
-        const gasResponse = await fetch(gasEndpoint);
-        const gasResponseJson = await gasResponse.json();
-        setGasData(await gasResponseJson.result);
+    try {
+      const gasResponse = await fetch(gasEndpoint);
+      const gasResponseJson = await gasResponse.json();
 
-        const ethPriceResponse = await fetch(
-          `${ethEndpoint}?fiat=${nativeCurrency}`
-        );
-        const ethPriceResponseJson = await ethPriceResponse.json();
-        setEthData(await ethPriceResponseJson.result);
+      setGasData(await gasResponseJson.result);
 
-        const guzzlerResponse = await fetch(guzzlersEndpoint);
-        const guzzlerResponseJson = await guzzlerResponse.json();
-        setGuzzlerData(await guzzlerResponseJson.result);
-      } catch (error) {
-        setHasErrored(true);
-        handleError();
-      }
+      const ethPriceResponse = await fetch(
+        `${ethEndpoint}?fiat=${await config.nativeCurrency}`
+      );
+      const ethPriceResponseJson = await ethPriceResponse.json();
+
+      setEthData(await ethPriceResponseJson.result);
+
+      const guzzlerResponse = await fetch(guzzlersEndpoint);
+      const guzzlerResponseJson = await guzzlerResponse.json();
+
+      setGuzzlerData(await guzzlerResponseJson.result);
+
+      console.log(ethPriceResponseJson.result);
+    } catch (error) {
+      setHasErrored(true);
+      handleError();
     }
 
     return Promise.resolve();
@@ -152,32 +144,19 @@ const useApp = () => {
 
   return {
     isLoading,
-    setIsLoading,
-
-    isConnected,
-    setIsConnected,
-
     hasErrored,
-    setHasErrored,
-
     refreshing,
-    setIsRefreshing,
 
     gasData,
     ethData,
     guzzlerData,
 
-    handleHardRefresh,
     handleChangeCurrency,
     handleRefresh,
-    fetchData,
 
     showGasInCurrency,
-    toggleShowGasInCurrency,
     handleShowGasInCurrency,
-    nativeCurrency,
-    setNativeCurrency,
-    restoreUserConfig
+    nativeCurrency
   };
 };
 
