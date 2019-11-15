@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { createContainer } from "unstated-next";
 import { ActionSheetIOS, Alert } from "react-native";
 import store from "react-native-simple-store";
@@ -48,11 +48,9 @@ const useApp = () => {
       const config = await store.get("config");
 
       if (loadConfig(config)) {
-        toggleShowGasInCurrency(
-          (await config.showGasInCurrency) || showGasInCurrency
-        );
+        toggleShowGasInCurrency(config.showGasInCurrency || showGasInCurrency);
 
-        setNativeCurrency((await config.nativeCurrency) || nativeCurrency);
+        setNativeCurrency(config.nativeCurrency || nativeCurrency);
       }
     } catch (err) {
       console.error(err);
@@ -113,7 +111,13 @@ const useApp = () => {
     );
 
   const fetchData = async () => {
+    let fiat;
+
     const config = await store.get("config");
+
+    loadConfig(await config)
+      ? (fiat = await config.nativeCurrency)
+      : (fiat = nativeCurrency);
 
     try {
       const gasResponse = await fetch(gasEndpoint);
@@ -121,9 +125,7 @@ const useApp = () => {
 
       setGasData(await gasResponseJson.result);
 
-      const ethPriceResponse = await fetch(
-        `${ethEndpoint}?fiat=${await config.nativeCurrency}`
-      );
+      const ethPriceResponse = await fetch(`${ethEndpoint}?fiat=${fiat}`);
       const ethPriceResponseJson = await ethPriceResponse.json();
 
       setEthData(await ethPriceResponseJson.result);
@@ -133,6 +135,8 @@ const useApp = () => {
 
       setGuzzlerData(await guzzlerResponseJson.result);
     } catch (error) {
+      console.error(error);
+
       setHasErrored(true);
       handleError();
     }
