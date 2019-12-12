@@ -1572,6 +1572,11 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
+"@react-native-community/async-storage@1.3.3":
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/@react-native-community/async-storage/-/async-storage-1.3.3.tgz#fbcd09c68be0f91362c1bc5696802d8e281cf67d"
+  integrity sha512-mypRivxWCO3apTDWpbvc7owcz5gZH0mI60JWPJDW/Pibr3vk9T7TQPA44b8m43qc/o5cnSEJFZk6l/1T4QEM/Q==
+
 "@react-native-community/cli-debugger-ui@^3.0.0":
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@react-native-community/cli-debugger-ui/-/cli-debugger-ui-3.0.0.tgz#d01d08d1e5ddc1633d82c7d84d48fff07bd39416"
@@ -2088,10 +2093,10 @@ big-integer@^1.6.44:
   resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.48.tgz#8fd88bd1632cba4a1c8c3e3d7159f08bb95b4b9e"
   integrity sha512-j51egjPa7/i+RdiRuJbPdJ2FIUYYPhvYLjzoYbcMMm62ooO6F94fETG4MTs46zPAF9Brs04OajboA/qTGuz78w==
 
-bignumber.js@^8.0.1:
-  version "8.1.1"
-  resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-8.1.1.tgz#4b072ae5aea9c20f6730e4e5d529df1271c4d885"
-  integrity sha512-QD46ppGintwPGuL1KqmwhR0O+N2cZUg8JG/VzwI2e28sM9TqHjQB10lI4QAaMHVbLzwVLLAwEglpKPViWX+5NQ==
+bignumber.js@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-9.0.0.tgz#805880f84a329b5eac6e7cb6f8274b6d82bdf075"
+  integrity sha512-t/OYhhJ2SD+YGBQcjY8GzzDHEk9f3nerxjtfa6tlMXfe7frs/WozhvCNoGvpM0P3bNf3Gq5ZRMlGr5f3r4/N8A==
 
 blueimp-md5@^2.10.0:
   version "2.12.0"
@@ -3808,10 +3813,10 @@ locate-path@^5.0.0:
   dependencies:
     p-locate "^4.1.0"
 
-lodash.merge@4.6.0:
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/lodash.merge/-/lodash.merge-4.6.0.tgz#69884ba144ac33fe699737a6086deffadd0f89c5"
-  integrity sha1-aYhLoUSsM/5plzemCG3v+t0PicU=
+lodash.merge@4.6.2:
+  version "4.6.2"
+  resolved "https://registry.yarnpkg.com/lodash.merge/-/lodash.merge-4.6.2.tgz#558aa53b43b661e1925a0afdfa36a9a1085fe57a"
+  integrity sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==
 
 lodash.throttle@^4.1.1:
   version "4.1.1"
@@ -4959,21 +4964,20 @@ react-is@^16.8.4:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.12.0.tgz#2cc0fe0fba742d97fd527c42a13bec4eeb06241c"
   integrity sha512-rPCkf/mWBtKc97aLL9/txD8DZdemK0vkA3JMLShjlJB3Pj3s+lpf1KaBzMfQrAmhMQB0n1cU/SUGgKKBCe837Q==
 
-react-native-hooks@^0.0.6:
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/react-native-hooks/-/react-native-hooks-0.0.6.tgz#cc3ae92cc9c964f158f29ea0e7b502154907933c"
-  integrity sha512-SLB0H3n/SuRD/dEEntKprlPEp2WTF1NLQYO4SqDto0wjEvFJTmIU86QGhPxHSNndvdebniSnVohnexSaSirJVw==
-  dependencies:
-    react "^16.7.0-alpha.0"
+react-native-hooks@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/react-native-hooks/-/react-native-hooks-0.9.0.tgz#589fc2390296d9afe03327298dabcf0a1f350910"
+  integrity sha512-yqSAH0zxqjYHYPo6mPut3dEROoB5qMvsAbN3EK0MDQrWA5zdqmzgTEpS9/qwXaIyllk6hQbHxYnRTWq2uq4tJQ==
 
-react-native-simple-store@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/react-native-simple-store/-/react-native-simple-store-1.3.0.tgz#84953a7b007b8e3c50ec768478e98dc3636ef092"
-  integrity sha1-hJU6ewB7jjxQ7HaEeOmNw2Nu8JI=
+react-native-simple-store@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-simple-store/-/react-native-simple-store-2.0.2.tgz#5ee6e07d1869f6a5dd32d092e9c522e6c28aa826"
+  integrity sha512-2+EOxAGb5mMAQ3PKNUoE/X+i4fbHF7kV7BdJE9EQ42zbWty+rVH/3J6eJCijDXuGxvEvcQxkOU7P/VeY6wPvig==
   dependencies:
-    lodash.merge "4.6.0"
+    "@react-native-community/async-storage" "1.3.3"
+    lodash.merge "4.6.2"
 
-react-native-typography@^1.4.0:
+react-native-typography@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/react-native-typography/-/react-native-typography-1.4.1.tgz#2d05cb5935a2f7fdb6b43bbde93d60f1324578e3"
   integrity sha512-dc9Zfs4jUdq4ygx4/KwO6jKTERBu6cRrfPJGntw/pA+D6BMjlWfMNuhZ/69vf4Zpsnt9s4AGe+Z/V1QFYaCXAA==
@@ -5042,15 +5046,6 @@ react@16.9.0:
   version "16.9.0"
   resolved "https://registry.yarnpkg.com/react/-/react-16.9.0.tgz#40ba2f9af13bc1a38d75dbf2f4359a5185c4f7aa"
   integrity sha512-+7LQnFBwkiw+BobzOF6N//BdoNw0ouwmSJTEm9cglOOmsg/TMiFHZLe2sEoN5M7LgJTj9oHH0gxklfnQe66S1w==
-  dependencies:
-    loose-envify "^1.1.0"
-    object-assign "^4.1.1"
-    prop-types "^15.6.2"
-
-react@^16.7.0-alpha.0:
-  version "16.11.0"
-  resolved "https://registry.yarnpkg.com/react/-/react-16.11.0.tgz#d294545fe62299ccee83363599bf904e4a07fdbb"
-  integrity sha512-M5Y8yITaLmU0ynd0r1Yvfq98Rmll6q8AxaEe88c8e7LxO8fZ2cNgmFt0aGAS9wzf1Ao32NKXtCl+/tVVtkxq6g==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
