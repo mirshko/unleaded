@@ -6,7 +6,7 @@
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "platforms": ["ios"],
-    "version": "2.1.1",
+    "version": "2.1.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "githubUrl": "https://github.com/mirshko/unleaded",
@@ -15,12 +15,13 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "backgroundColor": "#000000",
     "updates": {
       "fallbackToCacheTimeout": 30000
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "buildNumber": "3",
+      "buildNumber": "1",
       "supportsTablet": false,
       "bundleIdentifier": "com.reiner.unleaded"
     }
