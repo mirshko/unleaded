@@ -4,8 +4,9 @@
     "description": "Current prices of gas for transactions on Ethereum",
     "slug": "unleaded",
     "privacy": "public",
-    "sdkVersion": "36.0.0",
-    "platforms": ["ios"],
+    "platforms": [
+      "ios"
+    ],
     "version": "2.1.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -19,7 +20,9 @@
     "updates": {
       "fallbackToCacheTimeout": 30000
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "buildNumber": "1",
       "supportsTablet": false,
