@@ -13,15 +13,12 @@ const Guzzler = ({ address, pct, ...rest }) => {
   const viewAddress = (address) => {
     ActionSheetIOS.showActionSheetWithOptions(
       {
-        options: ["Cancel", "View on Alethio", "View on Etherscan"],
+        options: ["Cancel", "View on Etherscan"],
         cancelButtonIndex: 0,
       },
       (buttonIndex) => {
         switch (buttonIndex) {
           case 1:
-            WebBrowser.openBrowserAsync(`https://aleth.io/account/${address}`);
-            break;
-          case 2:
             WebBrowser.openBrowserAsync(
               `https://etherscan.io/address/${address}`
             );
