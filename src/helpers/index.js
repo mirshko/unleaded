@@ -2,9 +2,9 @@ import { BigNumber } from "bignumber.js";
 
 BigNumber.config({ EXPONENTIAL_AT: 50 });
 
-export const big = val => new BigNumber(val);
+export const big = (val) => new BigNumber(val);
 
-export const gweiToEth = val => big(val).times(21000 / 1e9);
+export const gweiToEth = (val) => big(val).times(21000 / 1e9);
 
 export const ethToCurrency = (val, currency) => big(val) * big(currency);
 
@@ -16,39 +16,39 @@ export const formatCurrency = (raw, currency) =>
 export const currencies = {
   USD: {
     symbol: "$",
-    name: "USD"
+    name: "USD",
   },
   EUR: {
     symbol: "€",
-    name: "EUR"
+    name: "EUR",
   },
   GBP: {
     symbol: "£",
-    name: "GBP"
+    name: "GBP",
   },
   CAD: {
     symbol: "$",
-    name: "CAD"
+    name: "CAD",
   },
   CNY: {
     symbol: "¥",
-    name: "CNY"
+    name: "CNY",
   },
   RON: {
     symbol: "L",
-    name: "RON"
+    name: "RON",
   },
   JPY: {
     symbol: "¥",
-    name: "JPY"
-  }
+    name: "JPY",
+  },
 };
 
-export const loadConfig = config =>
+export const loadConfig = (config) =>
   config !== null && config != undefined ? true : false;
 
-export const formatTime = time =>
+export const formatTime = (time) =>
   time < 60 ? `~${time} secs` : `~${(time / 60).toFixed(1)} mins`;
 
-export const truncateAddress = address =>
+export const truncateAddress = (address) =>
   `${address.slice(0, 10)}...${address.slice(address.length - 4)}`;

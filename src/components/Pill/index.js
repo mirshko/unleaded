@@ -14,7 +14,7 @@ const Pill = ({ small, style, children }) => (
       paddingTop: small ? 2 : 4,
       paddingBottom: small ? 2 : 4,
       borderRadius: "100%",
-      ...style
+      ...style,
     }}
   >
     <Text
@@ -22,11 +22,11 @@ const Pill = ({ small, style, children }) => (
         small
           ? {
               ...human.calloutObject,
-              ...sanFranciscoWeights.medium
+              ...sanFranciscoWeights.medium,
             }
           : {
               ...human.bodyObject,
-              ...sanFranciscoWeights.semibold
+              ...sanFranciscoWeights.semibold,
             }
       }
     >

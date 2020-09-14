@@ -16,7 +16,7 @@ const RefreshSwiper = ({ children, refreshFunc, refreshingState }) => (
 RefreshSwiper.propTypes = {
   children: PropTypes.array.isRequired,
   refreshFunc: PropTypes.func.isRequired,
-  refreshingState: PropTypes.bool.isRequired
+  refreshingState: PropTypes.bool.isRequired,
 };
 
 export default RefreshSwiper;

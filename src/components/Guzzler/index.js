@@ -12,13 +12,13 @@ import constants from "../../constants";
 import { truncateAddress } from "../../helpers";
 
 const Guzzler = ({ address, pct, ...rest }) => {
-  const viewAddress = address => {
+  const viewAddress = (address) => {
     ActionSheetIOS.showActionSheetWithOptions(
       {
         options: ["Cancel", "View on Alethio", "View on Etherscan"],
-        cancelButtonIndex: 0
+        cancelButtonIndex: 0,
       },
-      buttonIndex => {
+      (buttonIndex) => {
         switch (buttonIndex) {
           case 1:
             WebBrowser.openBrowserAsync(`https://aleth.io/account/${address}`);

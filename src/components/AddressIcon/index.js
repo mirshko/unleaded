@@ -4,14 +4,14 @@ import { iOSColors } from "react-native-typography";
 
 import constants from "../../constants";
 
-const FadeInImage = props => {
+const FadeInImage = (props) => {
   const [opacity, setOpacity] = useState(new Animated.Value(0));
 
   _onLoad = () => {
     Animated.timing(opacity, {
       toValue: 1,
       duration: 150,
-      useNativeDriver: true
+      useNativeDriver: true,
     }).start();
   };
 
@@ -21,9 +21,9 @@ const FadeInImage = props => {
       {...props}
       style={[
         {
-          opacity
+          opacity,
         },
-        props.style
+        props.style,
       ]}
     />
   );
@@ -36,14 +36,14 @@ const AddressIcon = ({ address }) => (
       backgroundColor: iOSColors.customGray,
       height: 32,
       width: 32,
-      marginRight: constants.spacing.large
+      marginRight: constants.spacing.large,
     }}
   >
     <FadeInImage
       source={{
         uri: `https://blockies.shipchain.io/${address}.png?size=medium`,
         width: 32,
-        height: 32
+        height: 32,
       }}
       style={{ width: 32, height: 32, borderRadius: 32 / 2 }}
     />

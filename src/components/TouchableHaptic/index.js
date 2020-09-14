@@ -15,13 +15,13 @@ const TouchableHaptic = ({ children, onPress, impact }) => (
 );
 
 TouchableHaptic.defaultProps = {
-  impact: "Medium"
+  impact: "Medium",
 };
 
 TouchableHaptic.propTypes = {
   children: PropTypes.element.isRequired,
   onPress: PropTypes.func.isRequired,
-  impact: PropTypes.string
+  impact: PropTypes.string,
 };
 
 export default TouchableHaptic;

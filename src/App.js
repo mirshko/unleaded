@@ -37,20 +37,20 @@ const App = () => {
       key: "fast",
       speed: "Fast",
       gas: fast.price,
-      wait: fast.time
+      wait: fast.time,
     },
     {
       key: "average",
       speed: "Average",
       gas: average.price,
-      wait: average.time
+      wait: average.time,
     },
     {
       key: "safeLow",
       speed: "Slow",
       gas: slow.price,
-      wait: slow.time
-    }
+      wait: slow.time,
+    },
   ];
 
   return (
@@ -74,7 +74,7 @@ const App = () => {
             justifyContent="unset"
             style={{
               marginBottom: constants.spacing.xlarge,
-              marginTop: constants.spacing.xlarge
+              marginTop: constants.spacing.xlarge,
             }}
           >
             <Title>Gas Speeds</Title>
@@ -89,7 +89,7 @@ const App = () => {
                 {...item}
                 style={{
                   marginBottom:
-                    index !== gasSpeeds.length - 1 && constants.spacing.large
+                    index !== gasSpeeds.length - 1 && constants.spacing.large,
                 }}
               />
               {index !== gasSpeeds.length - 1 && (

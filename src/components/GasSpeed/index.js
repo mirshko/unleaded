@@ -17,7 +17,7 @@ const GasSpeed = ({ speed, wait, gas, ...rest }) => {
     nativeCurrency,
     ethData,
     showGasInCurrency,
-    handleShowGasInCurrency
+    handleShowGasInCurrency,
   } = AppContainer.useContainer();
 
   const symbol = currencies[nativeCurrency].symbol;

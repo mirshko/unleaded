@@ -18,16 +18,16 @@ const Settings = () => {
     MailComposer.composeAsync({
       recipients: ["unleaded@reiner.design"],
       subject: "Unleaded Feedback",
-      body: feedbackTemplate
+      body: feedbackTemplate,
     }).catch(() =>
       Alert.alert("Unable To Send Feedback", undefined, [
         {
           text: "Copy feedback email",
-          onPress: () => Clipboard.setString("unleaded@reiner.design")
+          onPress: () => Clipboard.setString("unleaded@reiner.design"),
         },
         {
-          text: "OK"
-        }
+          text: "OK",
+        },
       ])
     );
   };
@@ -42,11 +42,11 @@ const Settings = () => {
           "Change your currency",
           `${
             data.showGasInCurrency ? "Show gas in Gwei" : "Show gas in currency"
-          }`
+          }`,
         ],
-        cancelButtonIndex: 0
+        cancelButtonIndex: 0,
       },
-      buttonIndex => {
+      (buttonIndex) => {
         switch (buttonIndex) {
           case 1:
             WebBrowser.openBrowserAsync(`https://unleaded.reiner.design/`);

@@ -21,7 +21,7 @@ const EthereumPrice = () => {
         style={{
           ...human.largeTitleObject,
           ...sanFranciscoWeights.black,
-          marginTop: constants.spacing.xlarge
+          marginTop: constants.spacing.xlarge,
         }}
       >
         {toggle

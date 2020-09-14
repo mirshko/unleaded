@@ -12,7 +12,7 @@ const Header = () => (
     justifyContent="space-between"
     flexDirection="row"
     style={{
-      marginHorizontal: 12
+      marginHorizontal: 12,
     }}
   >
     <Pane flex={0} height={40} width={40} />

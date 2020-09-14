@@ -4,12 +4,12 @@ import { human, sanFranciscoWeights } from "react-native-typography";
 
 import constants from "../../constants";
 
-const Title = props => (
+const Title = (props) => (
   <Text
     style={{
       ...human.title3Object,
       ...sanFranciscoWeights.bold,
-      marginBottom: constants.spacing.medium
+      marginBottom: constants.spacing.medium,
     }}
     {...props}
   />

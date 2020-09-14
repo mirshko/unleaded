@@ -3,12 +3,12 @@ import { View } from "react-native";
 
 import constants from "../../constants";
 
-const Gutter = props => (
+const Gutter = (props) => (
   <View
     {...props}
     style={{
       marginLeft: constants.spacing.mlarge,
-      marginRight: constants.spacing.mlarge
+      marginRight: constants.spacing.mlarge,
     }}
   />
 );

@@ -13,8 +13,8 @@ const constants = {
     large: 16,
     mlarge: 20,
     xlarge: 24,
-    xxlarge: 32
-  }
+    xxlarge: 32,
+  },
 };
 
 const feedbackTemplate = `

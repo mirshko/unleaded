@@ -11,7 +11,7 @@ const Divider = ({ style, mr, ml, mb, mt }) => (
       marginTop: mt,
       marginRight: mr,
       marginLeft: ml,
-      ...style
+      ...style,
     }}
   />
 );

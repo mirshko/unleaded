@@ -2,13 +2,13 @@ import React from "react";
 import { Text } from "react-native";
 import { iOSColors, human, sanFranciscoWeights } from "react-native-typography";
 
-const Caps = props => (
+const Caps = (props) => (
   <Text
     style={{
       ...human.caption2Object,
       textTransform: "uppercase",
       color: iOSColors.gray,
-      ...sanFranciscoWeights.bold
+      ...sanFranciscoWeights.bold,
     }}
     {...props}
   />

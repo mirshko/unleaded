@@ -11,7 +11,7 @@ const Pane = ({
   backgroundColor,
   height,
   width,
-  style
+  style,
 }) => (
   <View
     style={{
@@ -22,7 +22,7 @@ const Pane = ({
       alignItems,
       justifyContent,
       backgroundColor,
-      ...style
+      ...style,
     }}
   >
     {children}
@@ -33,7 +33,7 @@ Pane.defaultProps = {
   flex: 1,
   flexDirection: "column",
   alignItems: "center",
-  justifyContent: "center"
+  justifyContent: "center",
 };
 
 Pane.propTypes = {
@@ -44,7 +44,7 @@ Pane.propTypes = {
   flexDirection: PropTypes.string,
   alignItems: PropTypes.string,
   justifyContent: PropTypes.string,
-  backgroundColor: PropTypes.string
+  backgroundColor: PropTypes.string,
 };
 
 export default Pane;
