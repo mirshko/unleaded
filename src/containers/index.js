@@ -6,7 +6,7 @@ import store from "react-native-simple-store";
 import { loadConfig } from "../helpers";
 
 const gasEndpoint = `https://ethereum-api.xyz/gas-prices`;
-const ethEndpoint = `https://ethereum-api.xyz/eth-prices`;
+const ethEndpoint = `https://min-api.cryptocompare.com/data/price?fsym=ETH`;
 const guzzlersEndpoint = `https://ethereum-api.xyz/gas-guzzlers`;
 
 const currencyOptionArray = ["USD", "GBP", "EUR", "CAD", "CNY", "RON", "JPY"];
@@ -39,7 +39,7 @@ const useApp = () => {
     toggleShowGasInCurrency(!showGasInCurrency);
 
     await store.update("config", {
-      showGasInCurrency: !showGasInCurrency
+      showGasInCurrency: !showGasInCurrency,
     });
   };
 
@@ -69,9 +69,9 @@ const useApp = () => {
     ActionSheetIOS.showActionSheetWithOptions(
       {
         options: ["Cancel", ...currencyOptionArray],
-        cancelButtonIndex: 0
+        cancelButtonIndex: 0,
       },
-      async buttonIndex => {
+      async (buttonIndex) => {
         if (buttonIndex > 0) {
           setIsLoading(true);
 
@@ -80,7 +80,7 @@ const useApp = () => {
           setNativeCurrency(selectedCurrency);
 
           await store.update("config", {
-            nativeCurrency: selectedCurrency
+            nativeCurrency: selectedCurrency,
           });
 
           await fetchData();
@@ -105,8 +105,8 @@ const useApp = () => {
             await fetchData();
 
             setIsLoading(false);
-          }
-        }
+          },
+        },
       ]
     );
 
@@ -125,10 +125,10 @@ const useApp = () => {
 
       setGasData(await gasResponseJson.result);
 
-      const ethPriceResponse = await fetch(`${ethEndpoint}?fiat=${fiat}`);
+      const ethPriceResponse = await fetch(`${ethEndpoint}&tsyms=${fiat}`);
       const ethPriceResponseJson = await ethPriceResponse.json();
 
-      setEthData(await ethPriceResponseJson.result);
+      setEthData(await ethPriceResponseJson);
 
       const guzzlerResponse = await fetch(guzzlersEndpoint);
       const guzzlerResponseJson = await guzzlerResponse.json();
@@ -158,7 +158,7 @@ const useApp = () => {
 
     showGasInCurrency,
     handleShowGasInCurrency,
-    nativeCurrency
+    nativeCurrency,
   };
 };
 
