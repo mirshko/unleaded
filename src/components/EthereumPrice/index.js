@@ -1,14 +1,10 @@
 import React, { useState } from "react";
 import { Text } from "react-native";
 import { human, sanFranciscoWeights } from "react-native-typography";
-
-import TouchableHaptic from "../TouchableHaptic";
-
-import { AppContainer } from "../../containers";
-
 import constants from "../../constants";
-
+import { AppContainer } from "../../containers";
 import { currencies } from "../../helpers";
+import TouchableHaptic from "../TouchableHaptic";
 
 const EthereumPrice = () => {
   const { nativeCurrency, ethData } = AppContainer.useContainer();

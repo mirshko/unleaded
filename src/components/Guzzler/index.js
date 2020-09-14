@@ -1,15 +1,13 @@
-import React from "react";
-import { Text, ActionSheetIOS, View } from "react-native";
 import * as WebBrowser from "expo-web-browser";
+import React from "react";
+import { ActionSheetIOS, Text, View } from "react-native";
 import { human } from "react-native-typography";
-
-import TouchableHaptic from "../TouchableHaptic";
-import Pane from "../Pane";
-import Pill from "../Pill";
-import AddressIcon from "../AddressIcon";
-
 import constants from "../../constants";
 import { truncateAddress } from "../../helpers";
+import AddressIcon from "../AddressIcon";
+import Pane from "../Pane";
+import Pill from "../Pill";
+import TouchableHaptic from "../TouchableHaptic";
 
 const Guzzler = ({ address, pct, ...rest }) => {
   const viewAddress = (address) => {

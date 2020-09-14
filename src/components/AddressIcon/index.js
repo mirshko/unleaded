@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { View, Animated } from "react-native";
+import { Animated, View } from "react-native";
 import { iOSColors } from "react-native-typography";
-
 import constants from "../../constants";
 
 const FadeInImage = (props) => {

@@ -1,20 +1,17 @@
 import React from "react";
 import { ActivityIndicator, View } from "react-native";
-
-import Header from "./components/Header";
-import Container from "./components/Container";
-import RefreshSwiper from "./components/RefreshSwiper";
-import Pane from "./components/Pane";
-import Divider from "./components/Divider";
 import Caps from "./components/Caps";
-import Title from "./components/Title";
+import Container from "./components/Container";
+import Divider from "./components/Divider";
+import EthereumPrice from "./components/EthereumPrice";
+import GasSpeed from "./components/GasSpeed";
 import Gutter from "./components/Gutter";
 import Guzzler from "./components/Guzzler";
-import GasSpeed from "./components/GasSpeed";
-import EthereumPrice from "./components/EthereumPrice";
-
+import Header from "./components/Header";
+import Pane from "./components/Pane";
+import RefreshSwiper from "./components/RefreshSwiper";
+import Title from "./components/Title";
 import constants from "./constants";
-
 import { AppContainer } from "./containers";
 
 const App = () => {

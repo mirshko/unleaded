@@ -1,10 +1,8 @@
 import React from "react";
 import { Image } from "react-native";
-
+import { headerOffset } from "../../constants";
 import Pane from "../Pane";
 import Settings from "../Settings";
-
-import { headerOffset } from "../../constants";
 
 const Header = () => (
   <Pane

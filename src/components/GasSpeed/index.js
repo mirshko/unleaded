@@ -1,16 +1,12 @@
 import React from "react";
 import { Text } from "react-native";
 import { human } from "react-native-typography";
-
-import Pane from "../Pane";
-import TouchableHaptic from "../TouchableHaptic";
-import Pill from "../Pill";
-
-import { AppContainer } from "../../containers";
-
 import constants from "../../constants";
-
-import { formatCurrency, formatTime, currencies } from "../../helpers";
+import { AppContainer } from "../../containers";
+import { currencies, formatCurrency, formatTime } from "../../helpers";
+import Pane from "../Pane";
+import Pill from "../Pill";
+import TouchableHaptic from "../TouchableHaptic";
 
 const GasSpeed = ({ speed, wait, gas, ...rest }) => {
   const {

@@ -1,6 +1,6 @@
-import React from "react";
-import { ScrollView, RefreshControl } from "react-native";
 import PropTypes from "prop-types";
+import React from "react";
+import { RefreshControl, ScrollView } from "react-native";
 
 const RefreshSwiper = ({ children, refreshFunc, refreshingState }) => (
   <ScrollView

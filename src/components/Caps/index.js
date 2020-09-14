@@ -1,6 +1,6 @@
 import React from "react";
 import { Text } from "react-native";
-import { iOSColors, human, sanFranciscoWeights } from "react-native-typography";
+import { human, iOSColors, sanFranciscoWeights } from "react-native-typography";
 
 const Caps = (props) => (
   <Text

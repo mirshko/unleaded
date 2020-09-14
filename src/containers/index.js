@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react";
-import { createContainer } from "unstated-next";
+import { useEffect, useState } from "react";
 import { ActionSheetIOS, Alert } from "react-native";
 import store from "react-native-simple-store";
-
+import { createContainer } from "unstated-next";
 import { loadConfig } from "../helpers";
 
 const gasEndpoint = `https://ethereum-api.xyz/gas-prices`;

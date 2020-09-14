@@ -1,15 +1,12 @@
-import React from "react";
-import { ActionSheetIOS, Alert, Clipboard } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as MailComposer from "expo-mail-composer";
 import * as WebBrowser from "expo-web-browser";
-
-import TouchableHaptic from "../TouchableHaptic";
-import Pane from "../Pane";
-
-import { AppContainer } from "../../containers";
-
+import React from "react";
+import { ActionSheetIOS, Alert, Clipboard } from "react-native";
 import { feedbackTemplate } from "../../constants";
+import { AppContainer } from "../../containers";
+import Pane from "../Pane";
+import TouchableHaptic from "../TouchableHaptic";
 
 const Settings = () => {
   const data = AppContainer.useContainer();
