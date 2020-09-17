@@ -4,9 +4,9 @@ import store from "react-native-simple-store";
 import { createContainer } from "unstated-next";
 import { loadConfig } from "../helpers";
 
-const gasEndpoint = `https://ethereum-api.xyz/gas-prices`;
+const gasEndpoint = `https://unleaded-api.vercel.app/api/gas-prices`;
 const ethEndpoint = `https://min-api.cryptocompare.com/data/price?fsym=ETH`;
-const guzzlersEndpoint = `https://ethereum-api.xyz/gas-guzzlers`;
+const guzzlersEndpoint = `https://unleaded-api.vercel.app/api/gas-guzzlers`;
 
 const currencyOptionArray = ["USD", "GBP", "EUR", "CAD", "CNY", "RON", "JPY"];
 
