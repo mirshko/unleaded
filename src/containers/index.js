@@ -122,7 +122,7 @@ const useApp = () => {
       const gasResponse = await fetch(gasEndpoint);
       const gasResponseJson = await gasResponse.json();
 
-      setGasData(await gasResponseJson.result);
+      setGasData(await gasResponseJson);
 
       const ethPriceResponse = await fetch(`${ethEndpoint}&tsyms=${fiat}`);
       const ethPriceResponseJson = await ethPriceResponse.json();
@@ -132,7 +132,7 @@ const useApp = () => {
       const guzzlerResponse = await fetch(guzzlersEndpoint);
       const guzzlerResponseJson = await guzzlerResponse.json();
 
-      setGuzzlerData(await guzzlerResponseJson.result);
+      setGuzzlerData(await guzzlerResponseJson);
     } catch (error) {
       console.error(error);
 
