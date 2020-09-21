@@ -4,9 +4,7 @@
     "description": "Current prices of gas for transactions on Ethereum",
     "slug": "unleaded",
     "privacy": "public",
-    "platforms": [
-      "ios"
-    ],
+    "platforms": ["ios"],
     "version": "2.1.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -20,11 +18,9 @@
     "updates": {
       "fallbackToCacheTimeout": 30000
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "buildNumber": "2",
+      "buildNumber": "3",
       "supportsTablet": false,
       "bundleIdentifier": "com.reiner.unleaded"
     }

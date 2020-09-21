@@ -1,6 +1,5 @@
-import * as WebBrowser from "expo-web-browser";
 import React from "react";
-import { ActionSheetIOS, Text, View } from "react-native";
+import { ActionSheetIOS, Clipboard, Text, View } from "react-native";
 import { human } from "react-native-typography";
 import constants from "../../constants";
 import { truncateAddress } from "../../helpers";
@@ -10,18 +9,16 @@ import Pill from "../Pill";
 import TouchableHaptic from "../TouchableHaptic";
 
 const Guzzler = ({ address, pct, ...rest }) => {
-  const viewAddress = (address) => {
+  const handleActionSheet = () => {
     ActionSheetIOS.showActionSheetWithOptions(
       {
-        options: ["Cancel", "View on Etherscan"],
+        options: ["Cancel", "Copy Address"],
         cancelButtonIndex: 0,
       },
       (buttonIndex) => {
         switch (buttonIndex) {
           case 1:
-            WebBrowser.openBrowserAsync(
-              `https://etherscan.io/address/${address}`
-            );
+            Clipboard.setString(address);
             break;
         }
       }
@@ -30,7 +27,7 @@ const Guzzler = ({ address, pct, ...rest }) => {
 
   return (
     <View style={{ marginBottom: constants.spacing.large }} {...rest}>
-      <TouchableHaptic onPress={() => viewAddress(address)}>
+      <TouchableHaptic onPress={handleActionSheet}>
         <Pane flexDirection="row" justifyContent="space-between" height={32}>
           <Pane flexDirection="row" flex={0}>
             <AddressIcon address={address} />
