@@ -70,11 +70,7 @@ const App = () => {
       <Wrapper>
         <Header />
 
-        <Pane flex={0}>
-          <EthereumPrice />
-        </Pane>
-
-        <Divider mt={constants.spacing.xlarge} />
+        <Divider />
 
         <RefreshSwiper
           refreshFunc={() => data.handleRefresh()}

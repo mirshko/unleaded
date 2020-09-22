@@ -17,7 +17,7 @@ const GasSpeed = ({ speed, wait, gas, ...rest }) => {
   } = AppContainer.useContainer();
 
   const symbol = currencies[nativeCurrency].symbol;
-  const gasInCurrency = formatCurrency(gas, ethData[nativeCurrency]);
+  const gasInCurrency = formatCurrency(gas, ethData[nativeCurrency] || 0);
 
   return (
     <Pane flex={1} flexDirection="row" justifyContent="space-between" {...rest}>
