@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Animated, View } from "react-native";
-import { iOSColors } from "react-native-typography";
+import { Animated, PlatformColor, View } from "react-native";
 import constants from "../../constants";
 
 const FadeInImage = (props) => {
@@ -32,7 +31,7 @@ const AddressIcon = ({ address }) => (
   <View
     style={{
       borderRadius: "100%",
-      backgroundColor: iOSColors.customGray,
+      backgroundColor: PlatformColor("systemGray6"),
       height: 32,
       width: 32,
       marginRight: constants.spacing.large,

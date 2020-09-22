@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text } from "react-native";
+import { PlatformColor, Text } from "react-native";
 import { human, sanFranciscoWeights } from "react-native-typography";
 import constants from "../../constants";
 import { AppContainer } from "../../containers";
@@ -17,12 +17,13 @@ const EthereumPrice = () => {
         style={{
           ...human.largeTitleObject,
           ...sanFranciscoWeights.black,
+          color: PlatformColor("label"),
           marginTop: constants.spacing.xlarge,
         }}
       >
         {toggle
           ? `${currencies[nativeCurrency].symbol}${Number(
-              ethData[nativeCurrency]
+              ethData[nativeCurrency] || 0
             ).toFixed(2)}`
           : `1 ETH`}
       </Text>

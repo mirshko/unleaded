@@ -1,17 +1,20 @@
 import * as Haptic from "expo-haptics";
 import PropTypes from "prop-types";
 import React from "react";
-import { TouchableOpacity } from "react-native";
+import { Pressable } from "react-native";
 
 const TouchableHaptic = ({ children, onPress, impact }) => (
-  <TouchableOpacity
+  <Pressable
     onPress={() => {
       onPress();
       Haptic.impactAsync(Haptic.ImpactFeedbackStyle[impact]);
     }}
+    style={({ pressed }) => ({
+      opacity: pressed ? 0.5 : 1,
+    })}
   >
     {children}
-  </TouchableOpacity>
+  </Pressable>
 );
 
 TouchableHaptic.defaultProps = {

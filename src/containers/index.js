@@ -5,7 +5,7 @@ import { createContainer } from "unstated-next";
 import { loadConfig } from "../helpers";
 
 const gasEndpoint = `https://unleaded-api.vercel.app/api/gas-prices`;
-const ethEndpoint = `https://min-api.cryptocompare.com/data/price?fsym=ETH`;
+const ethEndpoint = `https://unleaded-api.vercel.app/api/eth-prices`;
 const guzzlersEndpoint = `https://unleaded-api.vercel.app/api/gas-guzzlers`;
 
 const currencyOptionArray = ["USD", "GBP", "EUR", "CAD", "CNY", "RON", "JPY"];
@@ -124,7 +124,7 @@ const useApp = () => {
 
       setGasData(await gasResponseJson);
 
-      const ethPriceResponse = await fetch(`${ethEndpoint}&tsyms=${fiat}`);
+      const ethPriceResponse = await fetch(`${ethEndpoint}?fiat=${fiat}`);
       const ethPriceResponseJson = await ethPriceResponse.json();
 
       setEthData(await ethPriceResponseJson);

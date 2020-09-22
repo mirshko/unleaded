@@ -1,11 +1,10 @@
 import React from "react";
-import { Text } from "react-native";
-import { human, iOSColors, sanFranciscoWeights } from "react-native-typography";
+import { PlatformColor, Text } from "react-native";
+import { human, sanFranciscoWeights } from "react-native-typography";
 import Pane from "../Pane";
 
 const Pill = ({ small, style, children }) => (
   <Pane
-    backgroundColor={iOSColors.customGray}
     flex={0}
     style={{
       paddingLeft: small ? 8 : 10,
@@ -13,6 +12,7 @@ const Pill = ({ small, style, children }) => (
       paddingTop: small ? 2 : 4,
       paddingBottom: small ? 2 : 4,
       borderRadius: "100%",
+      backgroundColor: PlatformColor("systemGray6"),
       ...style,
     }}
   >
@@ -22,10 +22,12 @@ const Pill = ({ small, style, children }) => (
           ? {
               ...human.calloutObject,
               ...sanFranciscoWeights.medium,
+              color: PlatformColor("label"),
             }
           : {
               ...human.bodyObject,
               ...sanFranciscoWeights.semibold,
+              color: PlatformColor("label"),
             }
       }
     >

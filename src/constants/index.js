@@ -17,7 +17,7 @@ const constants = {
   },
 };
 
-const feedbackTemplate = `
+export const feedbackTemplate = `
 
 ---
 Build: ${constants.buildNumber}
@@ -27,4 +27,3 @@ Device: ${constants.model}
 `;
 
 export default constants;
-export { feedbackTemplate };

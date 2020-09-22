@@ -1,5 +1,5 @@
 import React from "react";
-import { Text } from "react-native";
+import { PlatformColor, Text } from "react-native";
 import { human } from "react-native-typography";
 import constants from "../../constants";
 import { AppContainer } from "../../containers";
@@ -22,7 +22,14 @@ const GasSpeed = ({ speed, wait, gas, ...rest }) => {
   return (
     <Pane flex={1} flexDirection="row" justifyContent="space-between" {...rest}>
       <Pane flex={0} alignItems="flex-start" height={32}>
-        <Text style={human.title2}>{speed}</Text>
+        <Text
+          style={{
+            ...human.title2Object,
+            color: PlatformColor("label"),
+          }}
+        >
+          {speed}
+        </Text>
       </Pane>
 
       <Pane flex={0}>

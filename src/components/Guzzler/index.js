@@ -1,5 +1,11 @@
 import React from "react";
-import { ActionSheetIOS, Clipboard, Text, View } from "react-native";
+import {
+  ActionSheetIOS,
+  Clipboard,
+  PlatformColor,
+  Text,
+  View,
+} from "react-native";
 import { human } from "react-native-typography";
 import constants from "../../constants";
 import { truncateAddress } from "../../helpers";
@@ -8,7 +14,7 @@ import Pane from "../Pane";
 import Pill from "../Pill";
 import TouchableHaptic from "../TouchableHaptic";
 
-const Guzzler = ({ address, pct, ...rest }) => {
+const Guzzler = ({ address, id, pct, ...rest }) => {
   const handleActionSheet = () => {
     ActionSheetIOS.showActionSheetWithOptions(
       {
@@ -31,7 +37,14 @@ const Guzzler = ({ address, pct, ...rest }) => {
         <Pane flexDirection="row" justifyContent="space-between" height={32}>
           <Pane flexDirection="row" flex={0}>
             <AddressIcon address={address} />
-            <Text style={human.body}>{truncateAddress(address)}</Text>
+            <Text
+              style={{
+                ...human.bodyObject,
+                color: PlatformColor("label"),
+              }}
+            >
+              {id || truncateAddress(address)}
+            </Text>
           </Pane>
 
           <Pill small>{pct.toFixed(2)}%</Pill>

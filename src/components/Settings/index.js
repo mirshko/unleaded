@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import * as MailComposer from "expo-mail-composer";
 import * as WebBrowser from "expo-web-browser";
 import React from "react";
-import { ActionSheetIOS, Alert, Clipboard } from "react-native";
+import { ActionSheetIOS, Alert, Clipboard, PlatformColor } from "react-native";
 import { feedbackTemplate } from "../../constants";
 import { AppContainer } from "../../containers";
 import Pane from "../Pane";
@@ -65,7 +65,7 @@ const Settings = () => {
   return (
     <TouchableHaptic onPress={() => openSettings()}>
       <Pane flex={0} height={40} width={40}>
-        <Ionicons name="ios-more" size={32} />
+        <Ionicons color={PlatformColor("label")} name="ios-more" size={32} />
       </Pane>
     </TouchableHaptic>
   );

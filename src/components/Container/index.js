@@ -1,11 +1,19 @@
 import React from "react";
-import { SafeAreaView, StatusBar } from "react-native";
+import { SafeAreaView, PlatformColor } from "react-native";
+import { StatusBar } from "expo-status-bar";
 
-export const Container = ({ children }) => (
-  <SafeAreaView style={{ backgroundColor: "white", flex: 1 }}>
-    <StatusBar barStyle="dark-content" />
-    {children}
-  </SafeAreaView>
-);
+export const Container = ({ children }) => {
+  return (
+    <SafeAreaView
+      style={{
+        backgroundColor: PlatformColor("systemBackground"),
+        flex: 1,
+      }}
+    >
+      <StatusBar style="auto" />
+      {children}
+    </SafeAreaView>
+  );
+};
 
 export default Container;

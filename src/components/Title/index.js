@@ -1,5 +1,5 @@
 import React from "react";
-import { Text } from "react-native";
+import { PlatformColor, Text } from "react-native";
 import { human, sanFranciscoWeights } from "react-native-typography";
 import constants from "../../constants";
 
@@ -9,6 +9,7 @@ const Title = (props) => (
       ...human.title3Object,
       ...sanFranciscoWeights.bold,
       marginBottom: constants.spacing.medium,
+      color: PlatformColor("label"),
     }}
     {...props}
   />

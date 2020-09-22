@@ -28,8 +28,14 @@ const App = () => {
       </Container>
     );
 
-  const { fast, average, slow } = data.gasData;
+  const { fastest, fast, average } = data.gasData;
   const gasSpeeds = [
+    {
+      key: "fastest",
+      speed: "Trader",
+      gas: fastest.price,
+      wait: fastest.time,
+    },
     {
       key: "fast",
       speed: "Fast",
@@ -38,15 +44,9 @@ const App = () => {
     },
     {
       key: "average",
-      speed: "Average",
+      speed: "Standard",
       gas: average.price,
       wait: average.time,
-    },
-    {
-      key: "safeLow",
-      speed: "Slow",
-      gas: slow.price,
-      wait: slow.time,
     },
   ];
 

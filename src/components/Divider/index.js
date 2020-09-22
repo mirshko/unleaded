@@ -1,12 +1,11 @@
 import React from "react";
-import { View } from "react-native";
-import { iOSColors } from "react-native-typography";
+import { View, PlatformColor } from "react-native";
 
 const Divider = ({ style, mr, ml, mb, mt }) => (
   <View
     style={{
       height: 1,
-      backgroundColor: iOSColors.lightGray,
+      backgroundColor: PlatformColor("separator"),
       marginBottom: mb,
       marginTop: mt,
       marginRight: mr,
