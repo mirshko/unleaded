@@ -21,8 +21,8 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "buildNumber": "2",
-      "supportsTablet": true,
+      "buildNumber": "3",
+      "supportsTablet": false,
       "bundleIdentifier": "com.reiner.unleaded"
     }
   }
