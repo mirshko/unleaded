@@ -1,4 +1,4 @@
-import { Ionicons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import * as MailComposer from "expo-mail-composer";
 import * as WebBrowser from "expo-web-browser";
 import React from "react";
@@ -65,7 +65,11 @@ const Settings = () => {
   return (
     <TouchableHaptic onPress={() => openSettings()}>
       <Pane flex={0} height={40} width={40}>
-        <Ionicons color={PlatformColor("label")} name="ios-more" size={32} />
+        <Feather
+          color={PlatformColor("label")}
+          name="more-horizontal"
+          size={32}
+        />
       </Pane>
     </TouchableHaptic>
   );
