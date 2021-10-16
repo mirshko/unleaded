@@ -1,8 +1,8 @@
 import React from "react";
-import { PlatformColor, Text } from "react-native";
+import { PlatformColor, Text, TextProps } from "react-native";
 import { human, sanFranciscoWeights } from "react-native-typography";
 
-const Caps = (props) => (
+const Caps = (props: TextProps) => (
   <Text
     style={{
       ...human.caption2Object,

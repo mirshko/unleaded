@@ -1,7 +1,15 @@
 import React from "react";
-import { View, PlatformColor } from "react-native";
+import { PlatformColor, View, ViewStyle } from "react-native";
 
-const Divider = ({ style, mr, ml, mb, mt }) => (
+type DividerProps = {
+  style?: ViewStyle;
+  mr?: number;
+  ml?: number;
+  mb?: number;
+  mt?: number;
+};
+
+const Divider = ({ style, mr, ml, mb, mt }: DividerProps) => (
   <View
     style={{
       height: 1,

@@ -1,9 +1,15 @@
 import React from "react";
-import { PlatformColor, Text } from "react-native";
+import { PlatformColor, Text, ViewStyle } from "react-native";
 import { human, sanFranciscoWeights } from "react-native-typography";
 import Pane from "../Pane";
 
-const Pill = ({ small, style, children }) => (
+type PillProps = {
+  small?: boolean;
+  style?: ViewStyle;
+  children: any;
+};
+
+const Pill = ({ small, style, children }: PillProps) => (
   <Pane
     flex={0}
     style={{
@@ -11,7 +17,7 @@ const Pill = ({ small, style, children }) => (
       paddingRight: small ? 8 : 10,
       paddingTop: small ? 2 : 4,
       paddingBottom: small ? 2 : 4,
-      borderRadius: "100%",
+      borderRadius: 99999,
       backgroundColor: PlatformColor("systemGray6"),
       ...style,
     }}

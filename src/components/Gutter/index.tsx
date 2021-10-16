@@ -1,8 +1,8 @@
 import React from "react";
-import { View } from "react-native";
+import { View, ViewProps } from "react-native";
 import constants from "../../constants";
 
-const Gutter = (props) => (
+const Gutter = (props: ViewProps) => (
   <View
     {...props}
     style={{

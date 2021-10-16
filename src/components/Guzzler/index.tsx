@@ -1,6 +1,12 @@
-import React from "react";
-import { ActionSheetIOS, PlatformColor, Text, View } from "react-native";
 import * as Clipboard from "expo-clipboard";
+import React from "react";
+import {
+  ActionSheetIOS,
+  PlatformColor,
+  Text,
+  View,
+  ViewProps,
+} from "react-native";
 import { human } from "react-native-typography";
 import constants from "../../constants";
 import { truncateAddress } from "../../helpers";
@@ -9,7 +15,9 @@ import Pane from "../Pane";
 import Pill from "../Pill";
 import TouchableHaptic from "../TouchableHaptic";
 
-const Guzzler = ({ address, id, pct, ...rest }) => {
+type GuzzlerProps = ViewProps & { address: string; id: string; pct: number };
+
+const Guzzler = ({ address, id, pct, ...rest }: GuzzlerProps) => {
   const handleActionSheet = () => {
     ActionSheetIOS.showActionSheetWithOptions(
       {

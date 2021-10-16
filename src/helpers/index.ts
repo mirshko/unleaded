@@ -2,16 +2,19 @@ import { BigNumber } from "bignumber.js";
 
 BigNumber.config({ EXPONENTIAL_AT: 50 });
 
-export const big = (val) => new BigNumber(val);
+export const big = (val: BigNumber.Value) => new BigNumber(val);
 
-export const gweiToEth = (val) => big(val).times(21000 / 1e9);
+export const gweiToEth = (val: BigNumber.Value) => big(val).times(21000 / 1e9);
 
-export const ethToCurrency = (val, currency) => big(val) * big(currency);
+export const ethToCurrency = (
+  val: BigNumber.Value,
+  currency: BigNumber.Value
+) => big(val).times(currency);
 
-export const formatCurrency = (raw, currency) =>
-  ethToCurrency(gweiToEth(big(raw)), currency)
-    .toFixed(3)
-    .toString();
+export const formatCurrency = (
+  raw: BigNumber.Value,
+  currency: BigNumber.Value
+) => ethToCurrency(gweiToEth(raw), currency).toFixed(3).toString();
 
 export const currencies = {
   USD: {
@@ -44,11 +47,8 @@ export const currencies = {
   },
 };
 
-export const loadConfig = (config) =>
-  config !== null && config != undefined ? true : false;
-
-export const formatTime = (time) =>
+export const formatTime = (time: number) =>
   time < 60 ? `~${time} secs` : `~${(time / 60).toFixed(1)} mins`;
 
-export const truncateAddress = (address) =>
+export const truncateAddress = (address: string) =>
   `${address.slice(0, 10)}...${address.slice(address.length - 4)}`;

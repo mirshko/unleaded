@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { Animated, PlatformColor, View } from "react-native";
+import { Animated, Image, ImageProps, PlatformColor, View } from "react-native";
 import constants from "../../constants";
 
-const FadeInImage = (props) => {
+const FadeInImage = ({ source, style, ...rest }: ImageProps) => {
   const [opacity, setOpacity] = useState(new Animated.Value(0));
 
-  _onLoad = () => {
+  const _onLoad = () => {
     Animated.timing(opacity, {
       toValue: 1,
       duration: 150,
@@ -15,13 +15,14 @@ const FadeInImage = (props) => {
 
   return (
     <Animated.Image
+      source={source}
       onLoad={_onLoad}
-      {...props}
+      {...rest}
       style={[
         {
           opacity,
         },
-        props.style,
+        style,
       ]}
     />
   );
@@ -30,7 +31,7 @@ const FadeInImage = (props) => {
 const AddressIcon = ({ address }) => (
   <View
     style={{
-      borderRadius: "100%",
+      borderRadius: 99999,
       backgroundColor: PlatformColor("systemGray6"),
       height: 32,
       width: 32,

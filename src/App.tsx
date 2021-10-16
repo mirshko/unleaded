@@ -73,10 +73,7 @@ const App = () => {
 
       <RefreshSwiper refreshFunc={handleRefresh} refreshingState={isRefreshing}>
         <Gutter>
-          <Pane
-            flex={0}
-            alignItems="unset"
-            justifyContent="unset"
+          <View
             style={{
               marginBottom: constants.spacing.xlarge,
               marginTop: constants.spacing.xlarge,
@@ -84,7 +81,7 @@ const App = () => {
           >
             <Title>Gas Speeds</Title>
             <Caps>By Cost</Caps>
-          </Pane>
+          </View>
         </Gutter>
 
         <Gutter>
