@@ -1,6 +1,6 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React from "react";
 import { PlatformColor, Text } from "react-native";
-import store from "react-native-simple-store";
 import { human } from "react-native-typography";
 import constants from "../../constants";
 import { currencies, formatCurrency, formatTime } from "../../helpers";
@@ -15,9 +15,13 @@ const GasSpeed = ({ speed, wait, gas, ethData, ...rest }) => {
   const handleShowGasInCurrency = async () => {
     const { showGasInCurrency } = config;
 
-    await store.update("config", {
-      showGasInCurrency: !showGasInCurrency,
-    });
+    await AsyncStorage.setItem(
+      "config",
+      JSON.stringify({
+        ...config,
+        showGasInCurrency: !showGasInCurrency,
+      })
+    );
 
     await configMutate({
       ...config,

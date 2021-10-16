@@ -1,10 +1,10 @@
 import { Feather } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Clipboard from "expo-clipboard";
 import * as MailComposer from "expo-mail-composer";
 import * as WebBrowser from "expo-web-browser";
 import React from "react";
 import { ActionSheetIOS, Alert, PlatformColor } from "react-native";
-import store from "react-native-simple-store";
 import { feedbackTemplate } from "../../constants";
 import { useConfig } from "../../hooks";
 import Pane from "../Pane";
@@ -43,9 +43,13 @@ const Settings = () => {
         if (buttonIndex > 0) {
           const selectedCurrency = currencyOptionArray[buttonIndex - 1];
 
-          await store.update("config", {
-            nativeCurrency: selectedCurrency,
-          });
+          await AsyncStorage.setItem(
+            "config",
+            JSON.stringify({
+              ...config,
+              nativeCurrency: selectedCurrency,
+            })
+          );
 
           await configMutate({
             ...config,
@@ -59,9 +63,13 @@ const Settings = () => {
   const handleShowGasInCurrency = async () => {
     const { showGasInCurrency } = config;
 
-    await store.update("config", {
-      showGasInCurrency: !showGasInCurrency,
-    });
+    await AsyncStorage.setItem(
+      "config",
+      JSON.stringify({
+        ...config,
+        showGasInCurrency: !showGasInCurrency,
+      })
+    );
 
     await configMutate({
       ...config,

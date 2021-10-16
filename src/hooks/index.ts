@@ -1,6 +1,6 @@
-import store from "react-native-simple-store";
 import useSWR from "swr";
 import { BASE_URL } from "../constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 async function fetcher(...args: [RequestInfo, RequestInit]) {
   const r = await fetch(...args);
@@ -56,14 +56,31 @@ const ETH_ENDPOINT = `${BASE_URL}/api/eth-prices?fiat=`;
 export function useETHPrice() {
   const { data: config } = useConfig();
 
-  return useSWR(ETH_ENDPOINT + config.nativeCurrency, fetcher);
+  return useSWR(() => ETH_ENDPOINT + config.nativeCurrency, fetcher);
+}
+
+type Config = {
+  showGasInCurrency: boolean;
+  nativeCurrency: string;
+};
+
+async function getConfig(): Promise<Config> {
+  try {
+    const config = await AsyncStorage.getItem("config");
+
+    if (config) {
+      return JSON.parse(config);
+    }
+
+    return {
+      showGasInCurrency: false,
+      nativeCurrency: "USD",
+    };
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 export function useConfig() {
-  return useSWR("config", store.get, {
-    fallbackData: {
-      showGasInCurrency: false,
-      nativeCurrency: "USD",
-    },
-  });
+  return useSWR<Config>("Config", getConfig);
 }
