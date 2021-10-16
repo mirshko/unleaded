@@ -1,10 +1,10 @@
 import React from "react";
 import { PlatformColor, View } from "react-native";
 import { SvgUri } from "react-native-svg";
-import constants from "../../constants";
+import constants, { BASE_URL } from "../../constants";
 
 const AddressIcon = ({ address }) => {
-  const uri = `https://unleaded-api.vercel.app/api/blockies?address=${address}`;
+  const uri = `${BASE_URL}/api/blockies?address=${address}`;
 
   return (
     <View

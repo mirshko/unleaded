@@ -1,5 +1,7 @@
 import Constants from "expo-constants";
 
+export const BASE_URL = `http://api.unleaded.mirshko.dev`;
+
 const constants = {
   headerOffset: 80,
   buildNumber: Constants.manifest.ios.buildNumber,

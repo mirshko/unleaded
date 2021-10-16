@@ -1,5 +1,6 @@
 import store from "react-native-simple-store";
 import useSWR from "swr";
+import { BASE_URL } from "../constants";
 
 async function fetcher(...args: [RequestInfo, RequestInit]) {
   const r = await fetch(...args);
@@ -11,7 +12,7 @@ async function fetcher(...args: [RequestInfo, RequestInit]) {
   throw new Error((await r.json()).error);
 }
 
-const GAS_ENDPOINT = `https://unleaded-api.vercel.app/api/gas-prices`;
+const GAS_ENDPOINT = `${BASE_URL}/api/gas-prices`;
 
 async function getGasData(url: string) {
   const r = await fetch(url);
@@ -44,13 +45,13 @@ export function useGasData() {
   return useSWR(GAS_ENDPOINT, getGasData);
 }
 
-const GUZZLERS_ENDPOINT = `https://unleaded-api.vercel.app/api/gas-guzzlers`;
+const GUZZLERS_ENDPOINT = `${BASE_URL}/api/gas-guzzlers`;
 
 export function useGuzzlersData() {
   return useSWR(GUZZLERS_ENDPOINT, fetcher);
 }
 
-const ETH_ENDPOINT = `https://unleaded-api.vercel.app/api/eth-prices?fiat=`;
+const ETH_ENDPOINT = `${BASE_URL}/api/eth-prices?fiat=`;
 
 export function useETHPrice() {
   const { data: config } = useConfig();
