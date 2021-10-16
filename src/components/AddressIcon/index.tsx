@@ -1,52 +1,25 @@
-import React, { useState } from "react";
-import { Animated, Image, ImageProps, PlatformColor, View } from "react-native";
+import React from "react";
+import { PlatformColor, View } from "react-native";
+import { SvgUri } from "react-native-svg";
 import constants from "../../constants";
 
-const FadeInImage = ({ source, style, ...rest }: ImageProps) => {
-  const [opacity, setOpacity] = useState(new Animated.Value(0));
-
-  const _onLoad = () => {
-    Animated.timing(opacity, {
-      toValue: 1,
-      duration: 150,
-      useNativeDriver: true,
-    }).start();
-  };
+const AddressIcon = ({ address }) => {
+  const uri = `https://unleaded-api.vercel.app/api/blockies?address=${address}`;
 
   return (
-    <Animated.Image
-      source={source}
-      onLoad={_onLoad}
-      {...rest}
-      style={[
-        {
-          opacity,
-        },
-        style,
-      ]}
-    />
+    <View
+      style={{
+        borderRadius: 99999,
+        backgroundColor: PlatformColor("systemGray6"),
+        height: 32,
+        width: 32,
+        marginRight: constants.spacing.large,
+        overflow: "hidden",
+      }}
+    >
+      <SvgUri width="100%" height="100%" uri={uri} />
+    </View>
   );
 };
-
-const AddressIcon = ({ address }) => (
-  <View
-    style={{
-      borderRadius: 99999,
-      backgroundColor: PlatformColor("systemGray6"),
-      height: 32,
-      width: 32,
-      marginRight: constants.spacing.large,
-    }}
-  >
-    <FadeInImage
-      source={{
-        uri: `https://unleaded-api.vercel.app/api/blockies/${address}.png?size=medium`,
-        width: 32,
-        height: 32,
-      }}
-      style={{ width: 32, height: 32, borderRadius: 32 / 2 }}
-    />
-  </View>
-);
 
 export default AddressIcon;
