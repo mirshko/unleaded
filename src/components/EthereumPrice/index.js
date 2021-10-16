@@ -1,22 +1,18 @@
 import React, { useState } from "react";
 import { PlatformColor, Text } from "react-native";
 import { human, sanFranciscoWeights } from "react-native-typography";
-import constants from "../../constants";
-import { AppContainer } from "../../containers";
 import { currencies } from "../../helpers";
+import { useConfig, useETHPrice } from "../../hooks";
 import TouchableHaptic from "../TouchableHaptic";
 
 const EthereumPrice = () => {
-  const {
-    nativeCurrency,
-    ethData,
-    isLoading,
-    hasErrored,
-  } = AppContainer.useContainer();
+  const { data, error } = useETHPrice();
+
+  const { data: config } = useConfig();
 
   const [toggle, setToggle] = useState(true);
 
-  if (isLoading || hasErrored)
+  if (!data || error)
     return (
       <Text
         style={{
@@ -41,8 +37,8 @@ const EthereumPrice = () => {
         }}
       >
         {toggle
-          ? `${currencies[nativeCurrency].symbol}${Number(
-              ethData[nativeCurrency] || 0.0
+          ? `${currencies[config.nativeCurrency].symbol}${Number(
+              data[config.nativeCurrency] || 0.0
             ).toFixed(2)}`
           : `1 ETH`}
       </Text>

@@ -2,22 +2,20 @@ import React from "react";
 import { PlatformColor, Text } from "react-native";
 import { human } from "react-native-typography";
 import constants from "../../constants";
-import { AppContainer } from "../../containers";
 import { currencies, formatCurrency, formatTime } from "../../helpers";
+import { useConfig } from "../../hooks";
 import Pane from "../Pane";
 import Pill from "../Pill";
-import TouchableHaptic from "../TouchableHaptic";
 
-const GasSpeed = ({ speed, wait, gas, ...rest }) => {
-  const {
-    nativeCurrency,
-    ethData,
-    showGasInCurrency,
-    handleShowGasInCurrency,
-  } = AppContainer.useContainer();
+const GasSpeed = ({ speed, wait, gas, ethData, ...rest }) => {
+  const { data: config } = useConfig();
 
-  const symbol = currencies[nativeCurrency].symbol;
-  const gasInCurrency = formatCurrency(gas, ethData[nativeCurrency] || 0);
+  const symbol = currencies[config.nativeCurrency].symbol;
+
+  const gasInCurrency = formatCurrency(
+    gas,
+    ethData[config.nativeCurrency] || 0
+  );
 
   return (
     <Pane flex={1} flexDirection="row" justifyContent="space-between" {...rest}>
@@ -33,17 +31,17 @@ const GasSpeed = ({ speed, wait, gas, ...rest }) => {
       </Pane>
 
       <Pane flex={0}>
-        <TouchableHaptic onPress={handleShowGasInCurrency}>
-          <Pane flex={0} flexDirection="row">
-            <Pill style={{ marginRight: constants.spacing.medium }}>
-              {formatTime(wait)}
-            </Pill>
+        <Pane flex={0} flexDirection="row">
+          <Pill style={{ marginRight: constants.spacing.medium }}>
+            {formatTime(wait)}
+          </Pill>
 
-            <Pill>
-              {showGasInCurrency ? `${symbol}${gasInCurrency}` : `${gas} Gwei`}
-            </Pill>
-          </Pane>
-        </TouchableHaptic>
+          <Pill>
+            {config.showGasInCurrency
+              ? `${symbol}${gasInCurrency}`
+              : `${gas} Gwei`}
+          </Pill>
+        </Pane>
       </Pane>
     </Pane>
   );

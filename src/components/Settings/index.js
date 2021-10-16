@@ -1,16 +1,19 @@
 import { Feather } from "@expo/vector-icons";
+import * as Clipboard from "expo-clipboard";
 import * as MailComposer from "expo-mail-composer";
 import * as WebBrowser from "expo-web-browser";
 import React from "react";
 import { ActionSheetIOS, Alert, PlatformColor } from "react-native";
-import * as Clipboard from "expo-clipboard";
+import store from "react-native-simple-store";
 import { feedbackTemplate } from "../../constants";
-import { AppContainer } from "../../containers";
+import { useConfig } from "../../hooks";
 import Pane from "../Pane";
 import TouchableHaptic from "../TouchableHaptic";
 
+const currencyOptionArray = ["USD", "GBP", "EUR", "CAD", "CNY", "RON", "JPY"];
+
 const Settings = () => {
-  const data = AppContainer.useContainer();
+  const { data: config, mutate: configMutate } = useConfig();
 
   const sendFeedback = () => {
     MailComposer.composeAsync({
@@ -30,6 +33,42 @@ const Settings = () => {
     );
   };
 
+  const handleChangeCurrency = () => {
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: ["Cancel", ...currencyOptionArray],
+        cancelButtonIndex: 0,
+      },
+      async (buttonIndex) => {
+        if (buttonIndex > 0) {
+          const selectedCurrency = currencyOptionArray[buttonIndex - 1];
+
+          await store.update("config", {
+            nativeCurrency: selectedCurrency,
+          });
+
+          await configMutate({
+            ...config,
+            nativeCurrency: selectedCurrency,
+          });
+        }
+      }
+    );
+  };
+
+  const handleShowGasInCurrency = async () => {
+    const { showGasInCurrency } = config;
+
+    await store.update("config", {
+      showGasInCurrency: !showGasInCurrency,
+    });
+
+    await configMutate({
+      ...config,
+      showGasInCurrency: !showGasInCurrency,
+    });
+  };
+
   const openSettings = () => {
     ActionSheetIOS.showActionSheetWithOptions(
       {
@@ -39,7 +78,9 @@ const Settings = () => {
           "Leave feedback",
           "Change your currency",
           `${
-            data.showGasInCurrency ? "Show gas in Gwei" : "Show gas in currency"
+            config.showGasInCurrency
+              ? "Show gas in Gwei"
+              : "Show gas in currency"
           }`,
         ],
         cancelButtonIndex: 0,
@@ -53,10 +94,10 @@ const Settings = () => {
             sendFeedback();
             break;
           case 3:
-            data.handleChangeCurrency();
+            handleChangeCurrency();
             break;
           case 4:
-            data.handleShowGasInCurrency();
+            handleShowGasInCurrency();
             break;
         }
       }
