@@ -1,11 +1,19 @@
 import store from "react-native-simple-store";
 import useSWR from "swr";
 
-const fetcher = (url) => fetch(url).then((res) => res.json());
+async function fetcher(...args: [RequestInfo, RequestInit]) {
+  const r = await fetch(...args);
+
+  if (r.ok) {
+    return r.json();
+  }
+
+  throw new Error((await r.json()).error);
+}
 
 const GAS_ENDPOINT = `https://unleaded-api.vercel.app/api/gas-prices`;
 
-async function getGasData(url) {
+async function getGasData(url: string) {
   const r = await fetch(url);
 
   const { fastest, fast, average } = await r.json();
