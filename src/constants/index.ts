@@ -29,3 +29,14 @@ Device: ${constants.model}
 `;
 
 export default constants;
+
+export const CURRENCY_ARRAY = [
+  "USD",
+  "GBP",
+  "EUR",
+  "CAD",
+  "CNY",
+  "RON",
+  "JPY",
+  "AUD",
+];

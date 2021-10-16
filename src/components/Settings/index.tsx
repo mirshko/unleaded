@@ -5,12 +5,10 @@ import * as MailComposer from "expo-mail-composer";
 import * as WebBrowser from "expo-web-browser";
 import React from "react";
 import { ActionSheetIOS, Alert, PlatformColor } from "react-native";
-import { feedbackTemplate } from "../../constants";
+import { CURRENCY_ARRAY, feedbackTemplate } from "../../constants";
 import { useConfig } from "../../hooks";
 import Pane from "../Pane";
 import TouchableHaptic from "../TouchableHaptic";
-
-const currencyOptionArray = ["USD", "GBP", "EUR", "CAD", "CNY", "RON", "JPY"];
 
 const Settings = () => {
   const { data: config, mutate: configMutate } = useConfig();
@@ -36,12 +34,12 @@ const Settings = () => {
   const handleChangeCurrency = () => {
     ActionSheetIOS.showActionSheetWithOptions(
       {
-        options: ["Cancel", ...currencyOptionArray],
+        options: ["Cancel", ...CURRENCY_ARRAY],
         cancelButtonIndex: 0,
       },
       async (buttonIndex) => {
         if (buttonIndex > 0) {
-          const selectedCurrency = currencyOptionArray[buttonIndex - 1];
+          const selectedCurrency = CURRENCY_ARRAY[buttonIndex - 1];
 
           await AsyncStorage.setItem(
             "config",
