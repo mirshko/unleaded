@@ -1,11 +1,6 @@
 import React from "react";
-import {
-  ActionSheetIOS,
-  Clipboard,
-  PlatformColor,
-  Text,
-  View,
-} from "react-native";
+import { ActionSheetIOS, PlatformColor, Text, View } from "react-native";
+import * as Clipboard from "expo-clipboard";
 import { human } from "react-native-typography";
 import constants from "../../constants";
 import { truncateAddress } from "../../helpers";
