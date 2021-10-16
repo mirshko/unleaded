@@ -1,6 +1,10 @@
-import { useKeepAwake } from "expo-keep-awake";
 import React, { useState } from "react";
-import { ActivityIndicator, AppState, View } from "react-native";
+import {
+  ActivityIndicator,
+  AppState,
+  AppStateStatus,
+  View,
+} from "react-native";
 import { SWRConfig } from "swr";
 import Caps from "./components/Caps";
 import Container from "./components/Container";
@@ -16,8 +20,6 @@ import constants from "./constants";
 import { useETHPrice, useGasData, useGuzzlersData } from "./hooks";
 
 const App = () => {
-  useKeepAwake();
-
   const {
     data: gasData,
     mutate: gasDataMutate,
@@ -131,8 +133,7 @@ const AppWrapper = () => (
       initFocus(callback) {
         let appState = AppState.currentState;
 
-        const onAppStateChange = (nextAppState) => {
-          /* If it's resuming from background or inactive mode to active one */
+        const onAppStateChange = (nextAppState: AppStateStatus) => {
           if (
             appState.match(/inactive|background/) &&
             nextAppState === "active"
@@ -142,14 +143,10 @@ const AppWrapper = () => (
           appState = nextAppState;
         };
 
-        // Subscribe to the app state change events
-        const subscription = AppState.addEventListener(
-          "change",
-          onAppStateChange
-        );
+        AppState.addEventListener("change", onAppStateChange);
 
         return () => {
-          subscription.remove();
+          AppState.removeEventListener("change", onAppStateChange);
         };
       },
     }}
