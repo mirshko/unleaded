@@ -40,7 +40,7 @@ const AddressIcon = ({ address }) => (
   >
     <FadeInImage
       source={{
-        uri: `https://blockies.shipchain.io/${address}.png?size=medium`,
+        uri: `https://unleaded-api.vercel.app/api/blockies/${address}.png?size=medium`,
         width: 32,
         height: 32,
       }}
