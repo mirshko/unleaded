@@ -40,3 +40,5 @@ export const CURRENCY_ARRAY = [
   "JPY",
   "AUD",
 ];
+
+export const MINIMUM_GAS_LIMIT = 21000;

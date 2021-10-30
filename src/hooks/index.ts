@@ -12,31 +12,38 @@ async function fetcher(...args: [RequestInfo, RequestInit]) {
   throw new Error((await r.json()).error);
 }
 
-const GAS_ENDPOINT = `${BASE_URL}/api/gas-prices`;
+type GasDataSpeeds = "safeLow" | "average" | "fast" | "fastest";
+
+interface GasData {
+  success: boolean;
+  result: Record<GasDataSpeeds, Record<"time" | "price", number>>;
+}
+
+const GAS_ENDPOINT = `${BASE_URL}/api/2/prices/gas`;
 
 async function getGasData(url: string) {
   const r = await fetch(url);
 
-  const { fastest, fast, average } = await r.json();
+  const { result }: GasData = await r.json();
 
   return [
     {
       key: "fastest",
-      speed: "Trader",
-      gas: fastest.price,
-      wait: fastest.time,
-    },
-    {
-      key: "fast",
       speed: "Fast",
-      gas: fast.price,
-      wait: fast.time,
+      gas: result.fast.price,
+      wait: result.fast.time,
     },
     {
-      key: "average",
+      key: "safeLow",
       speed: "Standard",
-      gas: average.price,
-      wait: average.time,
+      gas: result.average.price,
+      wait: result.average.time,
+    },
+    {
+      key: "safeLow",
+      speed: "Safe Low",
+      gas: result.safeLow.price,
+      wait: result.safeLow.time,
     },
   ];
 }
@@ -45,18 +52,51 @@ export function useGasData() {
   return useSWR(GAS_ENDPOINT, getGasData);
 }
 
+interface FeeEstimate {
+  success: boolean;
+  result: {
+    baseFee: number;
+    blockNumber: number;
+    blockTime: number;
+    gasPrice: {
+      fast: number;
+      instant: number;
+      standard: number;
+    };
+    nextBaseFee: number;
+    priorityFee: {
+      fast: number;
+      instant: number;
+      standard: number;
+    };
+  };
+}
+
+const FEE_ESTIMATE_ENDPOINT = `${BASE_URL}/api/2/prices/fee-estimate`;
+
+export function useFeeEstimate() {
+  return useSWR<FeeEstimate>(FEE_ESTIMATE_ENDPOINT, fetcher);
+}
+
 const GUZZLERS_ENDPOINT = `${BASE_URL}/api/gas-guzzlers`;
 
 export function useGuzzlersData() {
   return useSWR(GUZZLERS_ENDPOINT, fetcher);
 }
 
-const ETH_ENDPOINT = `${BASE_URL}/api/eth-prices?fiat=`;
+const ETH_ENDPOINT = `${BASE_URL}/api/2/prices/eth?fiat=`;
+
+interface ETHPrice {
+  success: boolean;
+  result: {
+    [currency: string]: number;
+  };
+}
 
 export function useETHPrice() {
   const { data: config } = useConfig();
 
-  return useSWR(() => ETH_ENDPOINT + config.nativeCurrency, fetcher);
+  return useSWR<ETHPrice>(() => ETH_ENDPOINT + config.nativeCurrency, fetcher);
 }
 
 type Config = {

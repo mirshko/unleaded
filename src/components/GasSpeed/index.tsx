@@ -33,7 +33,7 @@ const GasSpeed = ({ speed, wait, gas, ethData, ...rest }) => {
 
   const gasInCurrency = formatCurrency(
     gas,
-    ethData[config.nativeCurrency] || 0
+    ethData.result[config.nativeCurrency] || 0
   );
 
   return (

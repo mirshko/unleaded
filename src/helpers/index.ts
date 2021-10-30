@@ -52,3 +52,11 @@ export const formatTime = (time: number) =>
 
 export const truncateAddress = (address: string) =>
   `${address.slice(0, 10)}...${address.slice(address.length - 4)}`;
+
+export const toCurrency = (value: number, currency: string) =>
+  value.toLocaleString(undefined, {
+    style: "currency",
+    currency: currency,
+    maximumFractionDigits: 2,
+    minimumFractionDigits: 2,
+  });

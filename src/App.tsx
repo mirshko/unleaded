@@ -9,6 +9,7 @@ import { SWRConfig } from "swr";
 import Caps from "./components/Caps";
 import Container from "./components/Container";
 import Divider from "./components/Divider";
+import FeeEstimate from "./components/FeeEstimate";
 import GasSpeed from "./components/GasSpeed";
 import Gutter from "./components/Gutter";
 import Guzzler from "./components/Guzzler";
@@ -17,7 +18,12 @@ import Pane from "./components/Pane";
 import RefreshSwiper from "./components/RefreshSwiper";
 import Title from "./components/Title";
 import constants from "./constants";
-import { useETHPrice, useGasData, useGuzzlersData } from "./hooks";
+import {
+  useETHPrice,
+  useFeeEstimate,
+  useGasData,
+  useGuzzlersData,
+} from "./hooks";
 
 const App = () => {
   const {
@@ -38,20 +44,34 @@ const App = () => {
     error: ethPriceError,
   } = useETHPrice();
 
+  const {
+    data: feeEstimate,
+    mutate: feeEstimateMutate,
+    error: feeEstimateError,
+  } = useFeeEstimate();
+
   const isLoading = Boolean(
     typeof gasData === "undefined" ||
       typeof guzzlerData === "undefined" ||
-      typeof ethData === "undefined"
+      typeof ethData === "undefined" ||
+      typeof feeEstimate === "undefined"
   );
 
-  const isError = Boolean(gasDataError || guzzlerDataError || ethPriceError);
+  const isError = Boolean(
+    gasDataError || guzzlerDataError || ethPriceError || feeEstimateError
+  );
 
   const [isRefreshing, isRefreshingSet] = useState(false);
 
   async function handleRefresh() {
     isRefreshingSet(true);
 
-    await Promise.all([gasDataMutate(), guzzlerDataMutate(), ethPriceMutate()]);
+    await Promise.all([
+      gasDataMutate(),
+      guzzlerDataMutate(),
+      ethPriceMutate(),
+      feeEstimateMutate(),
+    ]);
 
     isRefreshingSet(false);
   }
@@ -74,15 +94,14 @@ const App = () => {
       <Divider />
 
       <RefreshSwiper refreshFunc={handleRefresh} refreshingState={isRefreshing}>
+        <FeeEstimate />
+
+        <Divider mb={constants.spacing.xlarge} mt={constants.spacing.xlarge} />
+
         <Gutter>
-          <View
-            style={{
-              marginBottom: constants.spacing.xlarge,
-              marginTop: constants.spacing.xlarge,
-            }}
-          >
-            <Title>Gas Speeds</Title>
-            <Caps>By Cost</Caps>
+          <View style={{ marginBottom: constants.spacing.xlarge }}>
+            <Title>Gas Prices</Title>
+            <Caps>By Cost (Legacy)</Caps>
           </View>
         </Gutter>
 
@@ -108,7 +127,7 @@ const App = () => {
 
         <Gutter>
           <View style={{ marginBottom: constants.spacing.xlarge }}>
-            <Title>Gas Guzzlers</Title>
+            <Title>Gas Burners</Title>
             <Caps>By Percent</Caps>
           </View>
         </Gutter>

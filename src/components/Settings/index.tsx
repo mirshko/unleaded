@@ -88,6 +88,7 @@ const Settings = () => {
               ? "Show gas in Gwei"
               : "Show gas in currency"
           }`,
+          "Learn about gas on Ethereum",
         ],
         cancelButtonIndex: 0,
       },
@@ -104,6 +105,11 @@ const Settings = () => {
             break;
           case 4:
             handleShowGasInCurrency();
+            break;
+          case 5:
+            WebBrowser.openBrowserAsync(
+              `https://ethereum.org/en/developers/docs/gas/`
+            );
             break;
         }
       }

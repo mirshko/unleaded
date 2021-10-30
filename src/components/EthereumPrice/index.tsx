@@ -38,7 +38,7 @@ const EthereumPrice = () => {
       >
         {toggle
           ? `${currencies[config.nativeCurrency].symbol}${Number(
-              data[config.nativeCurrency] || 0.0
+              data.result[config.nativeCurrency] || 0.0
             ).toFixed(2)}`
           : `1 ETH`}
       </Text>
