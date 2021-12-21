@@ -6,8 +6,6 @@
 
 Download the app live [on the App Store](https://itunes.apple.com/us/app/unleaded/id1446763654)!
 
-Become an Attendant and [beta test the app](https://testflight.apple.com/join/GSPyx2gW)!
-
 Accepting donations at `0xf6fDeE29e3A14610fdbE187e2d3442543cfA45B8` or through [Buy me a coffee](https://www.buymeacoffee.com/jeff) 🙌
 
 ## About
